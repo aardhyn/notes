@@ -31,6 +31,7 @@ export function Sidebar() {
 const Root = styled("div", {
   w: DEFAULT_SIDE_BAR_WIDTH,
   br: "1px solid $outline",
+  bg: "$background2",
 });
 const Head = styled("div", {
   p: 8,

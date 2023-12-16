@@ -1,6 +1,8 @@
+import { useTitle } from "route/useTitle";
 import { s, styled } from "style/stitches.config";
 
 export default function Home() {
+  useTitle("Home");
   return (
     <Root>
       <s.div css={{ d: "flex", gap: 8, direction: "column", items: "center" }}>
