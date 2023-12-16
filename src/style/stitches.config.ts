@@ -256,6 +256,9 @@ const globalStyles = globalCss({
     "-webkit-text-size-adjust": "100%",
     fontFamily: `$main`,
     fontSize: 14,
+    minH: "100vh",
+    minW: "100vw",
+    backgroundColor: "$background",
   },
 });
 

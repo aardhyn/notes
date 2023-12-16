@@ -2,6 +2,8 @@ import { styled, useGlobalStyles } from "style/stitches.config";
 import { Outlet } from "react-router-dom";
 import { Sidebar } from "./sidebar";
 import useTheme from "style/useTheme";
+import { hideScrollbar } from "style/util";
+import { OpenSidebar } from "./OpenSidebar";
 
 export default function Layout() {
   useGlobalStyles();
@@ -10,26 +12,32 @@ export default function Layout() {
   return (
     <Root className={`${theme}`}>
       <Sidebar />
-      <Outlet />
+      <Main>
+        <OpenSidebar showFrom="sm" />
+        <Outlet />
+      </Main>
     </Root>
   );
 }
 
 const Root = styled("div", {
-  bg: "$background",
-  c: "$text",
-
-  minH: "100vh",
-  minW: "100vw",
-  h: "100vh",
-  w: "100vw",
-  maxH: "100vh",
-  maxW: "100vw",
-
   d: "grid",
   gtc: "auto 1fr",
 
-  scrollSnapAlign: "start",
+  w: "100vw",
+  h: "100vh",
+  overflowX: "auto",
   scrollSnapType: "x mandatory",
   scrollBehavior: "smooth",
+  "&>*": { scrollSnapAlign: "start" },
+
+  bg: "$background",
+  c: "$text",
+
+  ...hideScrollbar,
+});
+const Main = styled("section", {
+  pos: "relative",
+  w: "100vw",
+  "@sm": { w: "100%" },
 });

@@ -19,7 +19,16 @@ export function Sidebar() {
   );
 
   return (
-    <Root css={{ w: size, ...css, ...rangeConstraint }}>
+    <Root
+      id="left-sidebar"
+      css={{
+        w: "90vw",
+        "@sm": { w: size },
+
+        ...css,
+        ...rangeConstraint,
+      }}
+    >
       <Head>
         <h2>📝 Notes</h2>
       </Head>
@@ -29,7 +38,6 @@ export function Sidebar() {
 }
 
 const Root = styled("div", {
-  w: DEFAULT_SIDE_BAR_WIDTH,
   br: "1px solid $outline",
   bg: "$background2",
 });

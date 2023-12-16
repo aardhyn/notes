@@ -18,4 +18,5 @@ const Root = styled("div", {
   d: "flex",
   items: "center",
   justify: "center",
+  h: "100%",
 });
