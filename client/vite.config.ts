@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import tsconfigPaths from "vite-tsconfig-paths";
 import dotenv from "dotenv";
 
-const path = ".env";
+const path = "../.env";
 dotenv.config({ path });
 
 const DEFAULT_PORT = 2048;
