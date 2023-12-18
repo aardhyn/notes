@@ -7,6 +7,7 @@ import {
 import { fonts } from "./font";
 
 const DEFAULT_FONT = "Inter";
+const MONO_FONT = "Noto Sans Mono";
 const BACKUP_FONTS = `
   system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,  Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
 `;
@@ -90,6 +91,7 @@ export const darkTheme = createTheme("dark", {
 
     outline: "#505961",
     outline2: "#3c434a",
+    outline3: "#2c3238",
 
     background: "#24292e",
     background2: "#1f2428",
@@ -144,7 +146,10 @@ const config = createStitches({
   },
   theme: {
     colors: {},
-    fonts: { main: `${DEFAULT_FONT}, ${BACKUP_FONTS}` },
+    fonts: {
+      main: `${DEFAULT_FONT}, ${BACKUP_FONTS}`,
+      mono: `${MONO_FONT}`,
+    },
     fontWeights: {
       normal: 500,
       bold: 900,
@@ -256,8 +261,14 @@ const globalStyles = globalCss({
     "-webkit-text-size-adjust": "100%",
     fontFamily: `$main`,
     fontSize: 14,
+
     minH: "100vh",
     minW: "100vw",
+    w: "100vw",
+    h: "100vh",
+    maxW: "100vw",
+    maxH: "100vh",
+
     backgroundColor: "$background",
   },
 });
@@ -270,14 +281,30 @@ export type CSS = StitchesCSS<typeof config>;
 
 export const s = {
   a: styled("a"),
+  abbr: styled("abbr"),
   audio: styled("audio"),
   aside: styled("aside"),
+  article: styled("article"),
+  area: styled("area"),
+  address: styled("address"),
+  blockquote: styled("blockquote"),
   button: styled("button"),
   b: styled("b"),
   canvas: styled("canvas"),
   caption: styled("caption"),
   code: styled("code"),
+  col: styled("col"),
   div: styled("div"),
+  details: styled("details"),
+  dl: styled("dl"),
+  dt: styled("dt"),
+  dd: styled("dd"),
+  em: styled("em"),
+  embed: styled("embed"),
+  fieldset: styled("fieldset"),
+  figcaption: styled("figcaption"),
+  figure: styled("figure"),
+  footer: styled("footer"),
   form: styled("form"),
   h1: styled("h1"),
   h2: styled("h2"),
@@ -285,6 +312,10 @@ export const s = {
   h4: styled("h4"),
   h5: styled("h5"),
   h6: styled("h6"),
+  hr: styled("hr"),
+  header: styled("header"),
+  hgroup: styled("hgroup"),
+  iframe: styled("iframe"),
   img: styled("img"),
   input: styled("input"),
   label: styled("label"),
@@ -298,6 +329,8 @@ export const s = {
   span: styled("span"),
   sup: styled("sup"),
   sub: styled("sub"),
+  svg: styled("svg"),
+  summary: styled("summary"),
   table: styled("table"),
   tbody: styled("tbody"),
   td: styled("td"),
