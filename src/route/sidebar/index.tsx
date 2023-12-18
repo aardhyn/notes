@@ -37,11 +37,11 @@ export function Sidebar() {
   );
 }
 
-const Root = styled("div", {
+const Root = styled("aside", {
   br: "1px solid $outline",
   bg: "$background2",
 });
-const Head = styled("div", {
+const Head = styled("section", {
   p: 8,
   bb: "1px solid $outline",
 });

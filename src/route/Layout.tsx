@@ -24,8 +24,11 @@ const Root = styled("div", {
   d: "grid",
   gtc: "auto 1fr",
 
-  w: "100vw",
-  h: "100vh",
+  maxH: "100vh",
+  maxW: "100vw",
+  minH: "100vh",
+  minW: "100vw",
+
   overflowX: "auto",
   scrollSnapType: "x mandatory",
   scrollBehavior: "smooth",
