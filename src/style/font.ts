@@ -1,4 +1,6 @@
 export const fonts = [
+  // Inter //
+
   {
     fontFamily: "Inter",
     fontWeight: 100,
@@ -124,5 +126,71 @@ export const fonts = [
     fontStyle: "italic",
     fontDisplay: "swap",
     src: "url('/fonts/Inter-BlackItalic.woff2') format('woff2'), url('/fonts/Inter-BlackItalic.woff') format('woff')",
+  },
+
+  // Noto Sans //
+
+  {
+    fontFamily: "Noto Sans Mono",
+    fontStyle: "normal",
+    fontWeight: 100,
+    fontDisplay: "swap",
+    src: "url('/fonts/NotoSansMono-Thin.woff2') format('woff2')",
+  },
+  {
+    fontFamily: "Noto Sans Mono",
+    fontStyle: "normal",
+    fontWeight: 200,
+    fontDisplay: "swap",
+    src: "url('/fonts/NotoSansMono-ExtraLight.woff2') format('woff2')",
+  },
+  {
+    fontFamily: "Noto Sans Mono",
+    fontStyle: "normal",
+    fontWeight: 300,
+    fontDisplay: "swap",
+    src: "url('/fonts/NotoSansMono-Light.woff2') format('woff2')",
+  },
+  {
+    fontFamily: "Noto Sans Mono",
+    fontStyle: "normal",
+    fontWeight: 400,
+    fontDisplay: "swap",
+    src: "url('/fonts/NotoSansMono-Regular.woff2') format('woff2')",
+  },
+  {
+    fontFamily: "Noto Sans Mono",
+    fontStyle: "normal",
+    fontWeight: 500,
+    fontDisplay: "swap",
+    src: "url('/fonts/NotoSansMono-Medium.woff2') format('woff2')",
+  },
+  {
+    fontFamily: "Noto Sans Mono",
+    fontStyle: "normal",
+    fontWeight: 600,
+    fontDisplay: "swap",
+    src: "url('/fonts/NotoSansMono-SemiBold.woff2') format('woff2')",
+  },
+  {
+    fontFamily: "Noto Sans Mono",
+    fontStyle: "normal",
+    fontWeight: 700,
+    fontDisplay: "swap",
+    src: "url('/fonts/NotoSansMono-Bold.woff2') format('woff2')",
+  },
+  {
+    fontFamily: "Noto Sans Mono",
+    fontStyle: "normal",
+    fontWeight: 800,
+    fontDisplay: "swap",
+    src: "url('/fonts/NotoSansMono-ExtraBold.woff2') format('woff2')",
+  },
+  {
+    fontFamily: "Noto Sans Mono",
+    fontStyle: "normal",
+    fontWeight: 900,
+    fontDisplay: "swap",
+    src: "url('/fonts/NotoSansMono-Black.woff2') format('woff2')",
   },
 ];
