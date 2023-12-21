@@ -15,7 +15,7 @@ class BadReadInvariant extends Error {
  * @param key key to read from
  * @returns
  */
-export function ReadPersistent<T>(
+export function readPersistent<T>(
   key: string,
   predicate?: (value: unknown) => value is T,
   noexcept: boolean = true
@@ -36,9 +36,9 @@ export function ReadPersistent<T>(
  * @param key key to write to
  * @param value value to write
  */
-export function WritePersistent<T>(key: string, value: T) {
+export function writePersistent<T>(key: string, value: T) {
   localStorage.setItem(key, JSON.stringify(value));
-  return ReadPersistent<T>(key);
+  return readPersistent<T>(key);
 }
 
 /**
@@ -49,14 +49,14 @@ export function WritePersistent<T>(key: string, value: T) {
  */
 export function usePersistent<T>(key: string, defaultValue: T) {
   const [value, setValue] = useState<T>(() => {
-    const item = ReadPersistent<T>(key);
+    const item = readPersistent<T>(key);
     if (item) return item; // already exists, return current value
-    WritePersistent(key, defaultValue);
+    writePersistent(key, defaultValue);
     return defaultValue;
   });
 
   useEffect(() => {
-    WritePersistent(key, value);
+    writePersistent(key, value);
   }, [key, value]);
   return [value, setValue] as const;
 }
