@@ -26,6 +26,9 @@ export const lightTheme = createTheme("light", {
     primary2: "#0f69d5",
     onPrimary: "#fff",
 
+    primaryTonal: "#c8dffa",
+    onPrimaryTonal: "#117dff",
+
     tonal: "#cfe4fc",
     tonal2: "#cfe4fc",
     outline: "#d0d7de",
@@ -38,6 +41,9 @@ export const lightTheme = createTheme("light", {
 
     error: "#f2e1e3",
     onError: "#e35557",
+
+    warning: "#ffe3d7",
+    onWarning: "#FCA86B",
 
     blue: "#DFE7FF",
     onBlue: "#0646FE",
@@ -85,6 +91,9 @@ export const darkTheme = createTheme("dark", {
     primary: "#117dff",
     primary2: "#0f69d5",
     onPrimary: "#fff",
+
+    primaryTonal: "#263547",
+    onPrimaryTonal: "#4f9fff",
 
     tonal: "#cfe4fc",
     tonal2: "#fff",
@@ -256,20 +265,13 @@ const globalStyles = globalCss({
   //@ts-expect-error type errors
   "@font-face": fonts,
   body: {
-    color: "$text",
     lineHeight: 1.5,
     "-webkit-text-size-adjust": "100%",
-    fontFamily: `$main`,
     fontSize: 14,
-
-    minH: "100vh",
-    minW: "100vw",
-    w: "100vw",
-    h: "100vh",
-    maxW: "100vw",
-    maxH: "100vh",
-
-    backgroundColor: "$background",
+  },
+  a: {
+    color: "inherit",
+    textDecoration: "none",
   },
 });
 
