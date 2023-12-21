@@ -35,4 +35,9 @@ export default function SignIn() {
   );
 }
 
-const Root = styled("main", {});
+const Root = styled("main", {
+  d: "flex",
+  h: "100%",
+  justify: "center",
+  items: "center",
+});

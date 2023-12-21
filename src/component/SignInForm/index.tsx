@@ -1,3 +1,6 @@
+import { Button } from "component/ui/Button";
+import Field from "component/ui/Field";
+import Spacer from "component/ui/Spacer";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { s, styled } from "style/stitches.config";
@@ -45,82 +48,119 @@ export function SignInForm({
     onSubmit({ username, email, password, firstName, lastName });
   };
 
+  const action = newUser ? "Sign Up" : "Sign In";
+
   return (
     <Root onSubmit={handleSubmit} {...props}>
-      <h1>{newUser ? "Sign Up" : "Sign In"}</h1>
-      {newUser && (
-        <>
-          <Label>
-            <span>First Name</span>
-            <input
-              type="text"
-              name="name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-            />
-          </Label>
-          <Label>
-            <span>Last Name</span>
-            <input
-              type="text"
-              name="name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-            />
-          </Label>
-          <Label>
-            <span>Username</span>
-            <input
-              type="text"
-              name="name"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </Label>
-        </>
-      )}
-      <Label>
-        <span>Email</span>
-        <input
-          type="email"
-          name="username"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </Label>
-      <Label>
-        <span>Password</span>
-        <input
-          type="password"
-          name="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </Label>
+      <Head>
+        <h1>{action}</h1>
+      </Head>
+      <Main>
+        {newUser && (
+          <>
+            <TwoColumn>
+              <Label>
+                <span>First Name</span>
+                <Field
+                  type="text"
+                  name="name"
+                  value={firstName}
+                  onValueChange={setFirstName}
+                />
+              </Label>
+              <Label>
+                <span>Last Name</span>
+                <Field
+                  type="text"
+                  name="name"
+                  value={lastName}
+                  onValueChange={setLastName}
+                />
+              </Label>
+            </TwoColumn>
+            <Label>
+              <span>Username</span>
+              <Field
+                type="text"
+                name="name"
+                value={username}
+                onValueChange={setUsername}
+              />
+            </Label>
+          </>
+        )}
+        <Label>
+          <span>Email</span>
+          <Field
+            type="email"
+            name="username"
+            value={email}
+            onValueChange={setEmail}
+          />
+        </Label>
+        <Label>
+          <span>Password</span>
+          <Field
+            type="password"
+            name="password"
+            value={password}
+            onValueChange={setPassword}
+          />
+        </Label>
+      </Main>
+
       {error && <s.p css={{ bg: "$error" }}>{error.message}</s.p>}
-      <button disabled={loading} type="submit">
-        {newUser ? "Sign Up" : "Sign in"}
-      </button>
-      {otherFormUrl && (
-        <Link to={otherFormUrl}>
-          {newUser ? "already have an account" : "I don't have an account"}
-        </Link>
-      )}
+
+      <Foot>
+        <Button disabled={loading} type="submit">
+          {action}
+        </Button>
+        {otherFormUrl && (
+          <OtherForm to={otherFormUrl}>
+            {newUser ? "I already have an account" : "I don't have an account"}
+          </OtherForm>
+        )}
+      </Foot>
     </Root>
   );
 }
 
-const Root = styled("form", {
+const Root = styled(s.form, {
+  minW: 512,
   d: "flex",
   direction: "column",
-  gap: 16,
-  padding: 16,
-  items: "flex-start",
+  gap: 32,
+  padding: "32px 24px",
+  background: "$background2",
+  r: 16,
 });
-
-const Label = styled("label", {
+const TwoColumn = styled(s.div, {
+  d: "grid",
+  gap: 24,
+  gridTemplateColumns: "1fr 1fr",
+});
+const Label = styled(s.label, {
   d: "flex",
   direction: "column",
   gap: 4,
-  maxWidth: 400,
+});
+const Foot = styled(s.div, {
+  d: "flex",
+  direction: "column",
+  gap: 16,
+});
+const Main = styled(s.div, {
+  d: "flex",
+  direction: "column",
+  gap: 16,
+});
+const Head = styled(s.header, {
+  d: "flex",
+  justify: "center",
+  items: "center",
+});
+const OtherForm = styled(Link, {
+  c: "$primary",
+  textAlign: "center",
+  "&:hover": { textDecoration: "underline" },
 });

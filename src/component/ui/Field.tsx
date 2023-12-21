@@ -15,7 +15,7 @@ export type FieldKeyEventHandler = (
 ) => void;
 export type FieldBlurHandler = (value: string) => void;
 
-export type FieldType = "text" | "number";
+export type FieldType = "text" | "number" | "password" | "email";
 
 type FieldProps = {
   value: string;
@@ -74,14 +74,14 @@ const FieldRoot = styled(s.input, {
   d: "inline-flex",
   items: "center",
   minW: 32,
-  p: 4,
+  p: 8,
 
   "&::placeholder": { c: "$text3" },
 
   variants: {
     variant: {
       stealth: {},
-      tonal: { bg: "$background", r: 4 },
+      tonal: { bg: "$background3", r: 4 },
       outlined: { r: 4, border: "1px solid $outline" },
     },
   },

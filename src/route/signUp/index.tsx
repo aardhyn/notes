@@ -44,4 +44,9 @@ export default function SignUp() {
   );
 }
 
-const Root = styled("main", {});
+const Root = styled("main", {
+  d: "flex",
+  h: "100%",
+  justify: "center",
+  items: "center",
+});
