@@ -25,12 +25,15 @@ export const NOTE_STYLES: CSS = {
     "&:hover": { textDecoration: "underline" },
   },
 
-  "& ul": { listStyleType: "disc" },
-  "& ol": { listStyleType: "decimal" },
+  "& ul": { listStyleType: "disc", ml: 26 },
+  "& ol": { listStyleType: "decimal", ml: 26 },
 
   "& blockquote": {
-    borderLeft: "3px solid $outline2",
-    pl: 8,
+    borderLeft: "4px solid $outline2",
+    p: 10,
+    pl: 14,
+    m: 8,
+    my: 16,
   },
 
   "& pre, & code": {
