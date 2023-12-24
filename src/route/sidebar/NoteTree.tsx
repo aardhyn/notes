@@ -206,6 +206,8 @@ const NoteName = styled(s.div, {
   p: 8,
   items: "center",
   overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 
   variants: {
     selected: {
