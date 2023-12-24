@@ -1,5 +1,5 @@
 import { styled } from "style/stitches.config";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Editor } from "component/Editor";
 import { hideScrollbar } from "../../../style/util";
 import { useNoteMutation, useNoteQuery } from "api/note";
@@ -10,11 +10,14 @@ import { SaveIndicator } from "./SaveIndicator";
 import { useDebounce } from "util/useDebounce";
 import type { Note } from "api/note";
 import { LoadingShim } from "component/ui/LoadingShim";
+import { useTitle } from "route/useTitle";
 
 export default function Note() {
   const { noteKey } = useNoteParams();
 
   const { data: note, error, isLoading } = useNoteQuery(noteKey);
+
+  useTitle(note?.name ?? "Note");
 
   if (isLoading) {
     return <LoadingShim />;
