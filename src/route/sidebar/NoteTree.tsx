@@ -1,7 +1,7 @@
 import {
-  useCreateNoteMutation,
+  useNoteCreateMutation,
   useNoteMutation,
-  useDeleteNoteMutation,
+  useNoteDeleteMutation,
 } from "api/note";
 import { Button, IconButton } from "component/ui/Button";
 import { Link, useNavigate } from "react-router-dom";
@@ -29,7 +29,7 @@ export function NoteTree({ editing }: { editing: boolean }) {
   const { data: tree, error, isLoading } = useNoteTreeQuery();
 
   const navigate = useNavigate();
-  const { mutate: createNote } = useCreateNoteMutation();
+  const { mutate: createNote } = useNoteCreateMutation();
   const handleCreateNote = () => {
     createNote(
       { name: "new note" },
@@ -127,7 +127,7 @@ function NoteTreeNode({
     }
   };
 
-  const { mutate: deleteNote } = useDeleteNoteMutation();
+  const { mutate: deleteNote } = useNoteDeleteMutation();
   const { mutate: deleteDirectory } = useDirectoryDeleteMutation();
   const handleDelete = () => {
     if (isDirectory && confirm(`Delete folder "${node.name}"?`)) {

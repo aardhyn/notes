@@ -26,7 +26,7 @@ async function createNote(note: NoteCreation) {
 
   return note_key;
 }
-export function useCreateNoteMutation() {
+export function useNoteCreateMutation() {
   return useMutation({ mutationKey: KEY, mutationFn: createNote });
 }
 
@@ -99,6 +99,6 @@ async function deleteNote(noteKey: string) {
   if (error) throw error;
   return noteKey;
 }
-export function useDeleteNoteMutation() {
+export function useNoteDeleteMutation() {
   return useMutation({ mutationKey: KEY, mutationFn: deleteNote });
 }

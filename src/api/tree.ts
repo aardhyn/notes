@@ -29,9 +29,7 @@ function toNoteNode(note: SimpleNote): TreeNode {
 
 export type Named = { name: string };
 function alphabetically(a: Named, b: Named) {
-  const aName = a.name;
-  const bName = b.name;
-  return aName.localeCompare(bName);
+  return a.name.localeCompare(b.name);
 }
 
 // tree //
