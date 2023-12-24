@@ -273,6 +273,10 @@ const globalStyles = globalCss({
     color: "inherit",
     textDecoration: "none",
   },
+  button: {
+    all: "unset",
+    cursor: "pointer",
+  },
 });
 
 export function useGlobalStyles() {

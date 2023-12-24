@@ -1,6 +1,7 @@
 import { invariant } from "exception/invariant";
 import { Table, supabase } from ".";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { timestampz } from "util/time";
 
 const KEY = ["notes"];
 
@@ -8,7 +9,9 @@ export type Note = Table<"note">;
 
 // create //
 
-export type NoteCreation = Partial<Pick<Note, "name" | "route" | "content">>;
+export type NoteCreation = Partial<
+  Pick<Note, "name" | "directory_key" | "content">
+>;
 
 async function createNote(note: NoteCreation) {
   // todo: no name? find the first available `New Note ${n}`
@@ -29,10 +32,10 @@ export function useCreateNoteMutation() {
 
 // list //
 
-async function listNotes() {
+export async function listNotes() {
   const { data: note, error } = await supabase
     .from("note")
-    .select("note_key, name, route")
+    .select("note_key, directory_key, name")
     .order("name", { ascending: true });
 
   if (error) throw error;
@@ -45,13 +48,13 @@ export type SimpleNote = Awaited<ReturnType<typeof listNotes>>[number];
 
 // get //
 
-async function getNote(note_key: string) {
+async function getNote(noteKey: string) {
   const { data, error } = await supabase
     .from("note")
     .select(
-      "note_key, user_key, name, route, content, meta, created_at, mutated_at"
+      "note_key, user_key, directory_key, name, content, meta, created_at, mutated_at"
     )
-    .eq("note_key", note_key);
+    .eq("note_key", noteKey);
   if (error) throw error;
 
   invariant(data?.length === 1, "note not found");
@@ -68,13 +71,14 @@ export function useNoteQuery(note_key: string) {
 // mutate //
 
 export type NoteMutation = Partial<
-  Pick<Note, "name" | "route" | "content" | "mutated_at">
+  Pick<Note, "name" | "directory_key" | "content">
 > &
   Pick<Note, "note_key">;
 async function mutateNote(mutation: NoteMutation) {
+  const timestampedMutation = { ...mutation, mutated_at: timestampz() };
   const { data, error } = await supabase
     .from("note")
-    .update(mutation)
+    .update(timestampedMutation)
     .eq("note_key", mutation.note_key)
     .select("note_key");
   if (error) throw error;
