@@ -1,8 +1,10 @@
 import { createBrowserRouter, RouteObject } from "react-router-dom";
-import { lazy } from "react";
 import { AuthRedirect } from "./AuthRedirect";
 import SignIn from "./signIn";
 import SignUp from "./signUp";
+import Notes from "./notes";
+import Home from "./notes/home";
+import Note from "./notes/note";
 
 const routes: RouteObject[] = [
   { path: "/sign-in", element: <SignIn /> },
@@ -12,10 +14,10 @@ const routes: RouteObject[] = [
     path: "/",
     children: [
       {
-        Component: lazy(() => import("./notes")),
+        element: <Notes />,
         children: [
-          { index: true, Component: lazy(() => import("./notes/home")) },
-          { path: "/:noteKey", Component: lazy(() => import("./notes/note")) },
+          { index: true, element: <Home /> },
+          { path: "/:noteKey", element: <Note /> },
         ],
       },
     ],
