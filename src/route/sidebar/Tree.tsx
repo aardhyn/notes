@@ -157,7 +157,7 @@ function NoteTreeNode({ node, editing }: { node: TreeNode; editing: boolean }) {
                 <NoteTreeNode key={child.key} node={child} editing={editing} />
               ))}
             </SubDirectories>
-            {!node.children.length && <Spacer />}
+            {!!node.children.length && <Spacer size="ty" />}
           </>
         )}
       </DirectoryDropzone>
