@@ -81,7 +81,6 @@ const KEY = ["tree"];
 async function noteTree() {
   // fetch notes
   const directories = await listDirectories();
-  console.log(directories);
   const notes = await listNotes();
 
   // create builder
