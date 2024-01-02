@@ -2,25 +2,26 @@ import { styled } from "style/stitches.config";
 import {
   MIN_SIDEBAR_WIDTH,
   MAX_SIDEBAR_WIDTH,
-  DEFAULT_SIDE_BAR_WIDTH,
+  DEFAULT_SIDEBAR_WIDTH,
+  SIDEBAR_WIDTH_KEY,
 } from "./constants";
 import { useDragPanePrimitive } from "component/DragPane/useDragPanePrimitive";
 import DragHandle from "component/DragPane/DragHandle";
-import { NoteTree } from "./NoteTree";
+import { NoteTree } from "./Tree";
 import { signOut } from "api/user";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, IconButton } from "component/ui/Button";
 import { CheckIcon, ExitIcon, Pencil1Icon } from "@radix-ui/react-icons";
 import { useState } from "react";
 
 export function Sidebar() {
   const { bind, rangeConstraint, css, size } = useDragPanePrimitive(
-    "left-sidebar",
+    SIDEBAR_WIDTH_KEY,
     "right",
     {
       minSize: MIN_SIDEBAR_WIDTH,
       maxSize: MAX_SIDEBAR_WIDTH,
-      defaultSize: DEFAULT_SIDE_BAR_WIDTH,
+      defaultSize: DEFAULT_SIDEBAR_WIDTH,
     }
   );
 
@@ -44,7 +45,7 @@ export function Sidebar() {
       }}
     >
       <Head>
-        <h2>📝 Notes</h2>
+        <Title to="/">📝 Notes</Title>
         <IconButton
           onClick={() => setEditing(!editing)}
           css={{ ml: 8 }}
@@ -53,7 +54,7 @@ export function Sidebar() {
           {editing ? <CheckIcon /> : <Pencil1Icon />}
         </IconButton>
       </Head>
-      <NoteTree editing={editing} />
+      <NoteTree editing={editing} width={size} />
       <Footer>
         <Button
           leadingIcon={<ExitIcon />}
@@ -68,22 +69,24 @@ export function Sidebar() {
     </Root>
   );
 }
-
 const Root = styled("aside", {
   br: "1px solid $outline",
   bg: "$background2",
   d: "flex",
   direction: "column",
 });
+
 const Head = styled("section", {
   p: 8,
   d: "flex",
   items: "center",
   justify: "space-between",
-  // bb: "1px solid $outline",
+});
+const Title = styled(Link, {
+  fontSize: 24,
+  fontWeight: 700,
 });
 const Footer = styled("section", {
   d: "flex",
   p: 8,
-  // bt: "1px solid $outline",
 });

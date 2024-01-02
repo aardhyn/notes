@@ -4,6 +4,8 @@ import { SimpleNote, listNotes } from "./note";
 
 // utilities //
 
+export type NodeType = "directory" | "note";
+
 function isRootDirectory(directory: SimpleDirectory) {
   return !directory.parent_key;
 }
@@ -22,9 +24,17 @@ type DirectoryNode = { type: "directory"; children: TreeNode[] } & Pick<
   "name"
 >;
 type NoteNode = { type: "note" } & Pick<SimpleNote, "name">;
-export type TreeNode = { key: string } & (DirectoryNode | NoteNode);
+export type TreeNode = { key: string; parentKey: string | null } & (
+  | DirectoryNode
+  | NoteNode
+);
 function toNoteNode(note: SimpleNote): TreeNode {
-  return { key: note.note_key, name: note.name, type: "note" };
+  return {
+    key: note.note_key,
+    name: note.name,
+    type: "note",
+    parentKey: note.directory_key,
+  };
 }
 
 export type Named = { name: string };
@@ -53,6 +63,7 @@ function createTreeBuilder(
     // build node
     const node: TreeNode = {
       type: "directory",
+      parentKey: root.parent_key,
       key: root.directory_key,
       name: root.name,
       children: sortedSubTrees,
@@ -70,6 +81,7 @@ const KEY = ["tree"];
 async function noteTree() {
   // fetch notes
   const directories = await listDirectories();
+  console.log(directories);
   const notes = await listNotes();
 
   // create builder

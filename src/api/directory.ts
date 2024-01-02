@@ -69,7 +69,7 @@ export function useDirectoryQuery(directoryKey: string) {
 // mutate //
 
 export type DirectoryMutation = Partial<
-  Pick<Directory, "name" | "directory_key">
+  Pick<Directory, "name" | "directory_key" | "parent_key">
 > &
   Pick<Directory, "directory_key">;
 async function mutateDirectory(mutation: DirectoryMutation) {
