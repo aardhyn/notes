@@ -1,5 +1,5 @@
 import { VariantProps } from "@stitches/react";
-import { InputHTMLAttributes } from "react";
+import { InputHTMLAttributes, forwardRef } from "react";
 import { s, CSS, styled } from "style/stitches.config";
 
 export const FIELD_HEIGHT = 16;
@@ -28,46 +28,52 @@ type FieldProps = {
 } & VariantProps<typeof FieldRoot> &
   Omit<InputHTMLAttributes<HTMLInputElement>, "onBlur" | "onKeyDown">;
 
-export default function Field({
-  value,
-  onValueChange,
-  placeholder = "",
-  onBlur,
-  onKeyDown,
-  type = "text",
-  dynamicSize = false,
-  readOnly = false,
-  disabled = false,
-  css,
-  ...fieldProps
-}: FieldProps) {
-  return (
-    <FieldRoot
-      css={{
-        w: dynamicSize
-          ? `${(value?.length || placeholder.length) + 1}ch`
-          : undefined,
-        ...hideNumberArrows,
-        ...css,
-      }}
-      placeholder={placeholder}
-      value={value ?? ""}
-      readOnly={readOnly}
-      disabled={disabled}
-      type={type}
-      onKeyDown={(e) =>
-        onKeyDown?.(e.key, {
-          shift: e.shiftKey,
-          value: e.currentTarget.value,
-          blur: e.currentTarget.blur,
-        })
-      }
-      onBlur={(e) => onBlur?.(e.target.value)}
-      onChange={(e) => onValueChange?.(e.target.value)}
-      {...fieldProps}
-    />
-  );
-}
+export const Field = forwardRef<HTMLInputElement, FieldProps>(
+  (
+    {
+      value,
+      onValueChange,
+      placeholder = "",
+      onBlur,
+      onKeyDown,
+      type = "text",
+      dynamicSize = false,
+      readOnly = false,
+      disabled = false,
+      css,
+      ...fieldProps
+    },
+    ref
+  ) => {
+    return (
+      <FieldRoot
+        ref={ref}
+        css={{
+          w: dynamicSize
+            ? `${(value?.length || placeholder.length) + 1}ch`
+            : undefined,
+          ...hideNumberArrows,
+          ...css,
+        }}
+        placeholder={placeholder}
+        value={value ?? ""}
+        readOnly={readOnly}
+        disabled={disabled}
+        type={type}
+        onKeyDown={(e) =>
+          onKeyDown?.(e.key, {
+            shift: e.shiftKey,
+            value: e.currentTarget.value,
+            blur: e.currentTarget.blur,
+          })
+        }
+        onBlur={(e) => onBlur?.(e.target.value)}
+        onChange={(e) => onValueChange?.(e.target.value)}
+        {...fieldProps}
+      />
+    );
+  }
+);
 const FieldRoot = styled(s.input, {
   all: "unset",
   h: FIELD_HEIGHT,
