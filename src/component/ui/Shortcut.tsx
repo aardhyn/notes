@@ -14,12 +14,10 @@ export function Shortcut({
   return (
     <ShortcutRoot css={css}>
       {parts.map((part, i) => (
-        <>
-          {!!i && parts.length > 1 && (
-            <ShortcutSeparator key={i + "s"}>{separator}</ShortcutSeparator>
-          )}
-          <ShortcutPart key={i}>{capitalize(part)}</ShortcutPart>
-        </>
+        <Segment key={i}>
+          {!!i && parts.length > 1 && <span>{separator}</span>}
+          <Code>{capitalize(part)}</Code>
+        </Segment>
       ))}
     </ShortcutRoot>
   );
@@ -30,5 +28,4 @@ const ShortcutRoot = styled("span", {
   items: "center",
   gap: 4,
 });
-const ShortcutPart = styled(Code, {});
-const ShortcutSeparator = styled("span", {});
+const Segment = styled("span", { d: "flex", gap: 4, items: "center" });
