@@ -5,7 +5,6 @@ import {
   DragHandleDots2Icon,
   ChevronDownIcon,
   ChevronRightIcon,
-  DotsHorizontalIcon,
 } from "@radix-ui/react-icons";
 import { useNoteParams } from "route/notes/note/params";
 import { useState } from "react";

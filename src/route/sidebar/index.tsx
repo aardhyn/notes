@@ -10,9 +10,8 @@ import DragHandle from "component/DragPane/DragHandle";
 import { NoteTree } from "./Tree";
 import { signOut } from "api/user";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, IconButton } from "component/ui/Button";
-import { CheckIcon, ExitIcon, Pencil1Icon } from "@radix-ui/react-icons";
-import { useState } from "react";
+import { Button } from "component/ui/Button";
+import { ExitIcon } from "@radix-ui/react-icons";
 
 export function Sidebar() {
   const { bind, rangeConstraint, css, size } = useDragPanePrimitive(

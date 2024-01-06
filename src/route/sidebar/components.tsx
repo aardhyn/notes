@@ -1,19 +1,9 @@
 import { useDroppable } from "@dnd-kit/core";
-import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
-import {
-  useDirectoryCreateMutation,
-  useDirectoryDeleteMutation,
-  useDirectoryMutation,
-} from "api/directory";
-import {
-  useNoteCreateMutation,
-  useNoteDeleteMutation,
-  useNoteMutation,
-} from "api/note";
+import { PlusIcon } from "@radix-ui/react-icons";
 import { TreeNode } from "api/tree";
-import { Button, IconButton } from "component/ui/Button";
+import { Button } from "component/ui/Button";
 import { Field } from "component/ui/Field";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import { styled, CSS } from "style/stitches.config";
 import { useNodeCreate, useNodeRename } from "./hooks";
 

@@ -1,5 +1,5 @@
 import { styled } from "style/stitches.config";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Editor } from "component/Editor";
 import { hideScrollbar } from "../../../style/util";
 import { useNoteMutation, useNoteQuery } from "api/note";

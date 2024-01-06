@@ -151,13 +151,13 @@ export function useNodeRename(node: TreeNode) {
   };
 }
 
-export function useNodeCopy(node: TreeNode) {
-  throw new Error("Not implemented");
-}
+// export function useNodeCopy(node: TreeNode) {
+//   throw new Error("Not implemented");
+// }
 
-export function useNodeMove(node: TreeNode) {
-  throw new Error("Not implemented");
-}
+// export function useNodeMove(node: TreeNode) {
+//   throw new Error("Not implemented");
+// }
 
 export function useNodeCreate(
   type: NodeType,
