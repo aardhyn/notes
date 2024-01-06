@@ -62,7 +62,7 @@ export function CreateNoteButton({
 }: {
   onSuccess: (noteKey: string) => void;
 }) {
-  const handleCreate = useNodeCreate("note", onSuccess);
+  const handleCreate = useNodeCreate("note", { onSuccess });
   return (
     <Button leadingIcon={<PlusIcon />} color="neutral" onClick={handleCreate}>
       Note

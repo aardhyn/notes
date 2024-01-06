@@ -161,16 +161,17 @@ export function useNodeRename(node: TreeNode) {
 
 export function useNodeCreate(
   type: NodeType,
-  onSuccess?: (key: string) => void
+  options?: { parentKey?: string | null; onSuccess?: (key: string) => void }
 ) {
+  const { parentKey, onSuccess } = options || {};
   const { mutate: createDirectory } = useDirectoryCreateMutation();
   const { mutate: createNote } = useNoteCreateMutation();
 
   return () => {
     if (type === "directory") {
-      createDirectory({ name: "folder" }, { onSuccess });
+      createDirectory({ name: "folder", parent_key: parentKey }, { onSuccess });
     } else {
-      createNote({ name: "new note" }, { onSuccess });
+      createNote({ name: "new note", directory_key: parentKey }, { onSuccess });
     }
   };
 }
