@@ -4,7 +4,7 @@ import { When } from "component/When";
 import {
   Dropdown,
   DropdownItem,
-  DropdownMenuSeparator,
+  DropdownSeparator,
 } from "component/ui/Dropdown";
 import { Shortcut } from "component/ui/Shortcut";
 import { ReactNode } from "react";
@@ -55,7 +55,18 @@ export function NodeDropdown({
       >
         Rename
       </DropdownItem>
-      <DropdownMenuSeparator />
+      <When condition={type === "note"}>
+        <DropdownItem
+          right={<Shortcut parts={["c"]} />}
+          onClick={() => {
+            onOpenChange(false);
+            onCopyNodeLink();
+          }}
+        >
+          Copy Link
+        </DropdownItem>
+      </When>
+      <DropdownSeparator />
       <DropdownItem
         onClick={() => {
           onOpenChange(false);
@@ -73,18 +84,6 @@ export function NodeDropdown({
       >
         New Note
       </DropdownItem>
-      <When condition={type === "note"}>
-        <Separator />
-        <DropdownItem
-          right={<Shortcut parts={["c"]} />}
-          onClick={() => {
-            onOpenChange(false);
-            onCopyNodeLink();
-          }}
-        >
-          Copy Link
-        </DropdownItem>
-      </When>
     </Dropdown>
   );
 }

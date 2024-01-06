@@ -21,18 +21,12 @@ import {
 } from "./hooks";
 import { When } from "component/When";
 import Spacer from "component/ui/Spacer";
-import {
-  CreateDirectoryButton,
-  CreateNoteButton,
-  DirectoryDropzone,
-  NodeName,
-} from "./components";
+import { DirectoryDropzone, NodeName } from "./components";
 import { NodeDropdown } from "./dropdown";
 
 export function NoteTree({ width }: { width: number }) {
   const { data: tree, error, isLoading } = useNoteTreeQuery();
 
-  const navigate = useNavigate();
   const DragContext = useNoteTreeDrag();
 
   if (isLoading) {
@@ -45,10 +39,6 @@ export function NoteTree({ width }: { width: number }) {
 
   return (
     <NoteNodes css={{ flex: 1 }}>
-      <Head>
-        <CreateNoteButton onSuccess={navigate} />
-        <CreateDirectoryButton />
-      </Head>
       <DragContext>
         <DirectoryDropzone directoryKey={null} css={{ flex: 1 }}>
           {tree?.map((node) => (
@@ -62,12 +52,6 @@ export function NoteTree({ width }: { width: number }) {
     </NoteNodes>
   );
 }
-const Head = styled("div", {
-  d: "grid",
-  gridTemplateColumns: "1fr 1fr",
-  gap: 8,
-  pb: 8,
-});
 const NoteNodes = styled("ul", {
   m: 0,
   p: 8,

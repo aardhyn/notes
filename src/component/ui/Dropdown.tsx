@@ -90,7 +90,7 @@ export const DropdownMenuLabel = styled(DropdownMenu.Label, {
   color: "$text2",
 });
 
-export const DropdownMenuSeparator = styled(DropdownMenu.Separator, {
+export const DropdownSeparator = styled(DropdownMenu.Separator, {
   h: 1,
   bg: "$outline",
   m: 4,
