@@ -12,9 +12,10 @@ import {
 } from "api/note";
 import { TreeNode } from "api/tree";
 import { Button, IconButton } from "component/ui/Button";
-import Field from "component/ui/Field";
-import { ReactNode, useState } from "react";
+import { Field } from "component/ui/Field";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { styled, CSS } from "style/stitches.config";
+import { useNodeCreate, useNodeRename } from "./hooks";
 
 export function NodeName({
   renaming,
@@ -25,37 +26,29 @@ export function NodeName({
   onRenamingChange: (renaming: boolean) => void;
   node: TreeNode;
 }) {
-  const [name, setName] = useState(node.name);
-  const { mutate: mutateNote } = useNoteMutation();
-  const { mutate: mutateDirectory } = useDirectoryMutation();
+  const { name, setName, rename } = useNodeRename(node);
+  const handleRename = () => {
+    onRenamingChange(false);
+    rename();
+  };
+
+  // focus and select input when renaming
+  const ref = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (renaming) {
+      ref.current?.focus();
+      ref.current?.select();
+    }
+  }, [renaming]);
 
   if (!renaming) {
     return <span onDoubleClick={() => onRenamingChange(true)}>{name}</span>;
   }
 
-  const isDirectory = node.type === "directory";
-
-  const handleRename = () => {
-    onRenamingChange(false);
-
-    if (name === node.name) {
-      return;
-    }
-
-    const processed = name; // processNoteName(name, usedNames);
-    setName(processed);
-
-    if (isDirectory) {
-      mutateDirectory({ directory_key: node.key, name: processed });
-    } else {
-      mutateNote({ note_key: node.key, name: processed });
-    }
-  };
-
   return (
     <NodeNameRoot
+      ref={ref}
       variant="stealth"
-      autoFocus
       value={name}
       onValueChange={setName}
       onBlur={handleRename}
@@ -74,59 +67,23 @@ const NodeNameRoot = styled(Field, {
   h: "unset",
 });
 
-export function NodeDelete({ node }: { node: TreeNode }) {
-  const isDirectory = node.type === "directory";
-
-  const { mutate: deleteNote } = useNoteDeleteMutation();
-  const { mutate: deleteDirectory } = useDirectoryDeleteMutation();
-  const handleDelete = () => {
-    if (isDirectory && confirm(`Delete folder "${node.name}"?`)) {
-      deleteDirectory(node.key);
-    } else if (confirm(`Delete note "${node.name}"?`)) {
-      deleteNote(node.key);
-    }
-  };
-
-  return (
-    <IconButton color="error" onClick={handleDelete}>
-      <TrashIcon />
-    </IconButton>
-  );
-}
-
 export function CreateNoteButton({
   onSuccess,
 }: {
   onSuccess: (noteKey: string) => void;
 }) {
-  const { mutate: createNote } = useNoteCreateMutation();
-  const handleCreateNote = () => {
-    createNote({ name: "new note" }, { onSuccess });
-  };
-
+  const handleCreate = useNodeCreate("note", onSuccess);
   return (
-    <Button
-      leadingIcon={<PlusIcon />}
-      color="neutral"
-      onClick={handleCreateNote}
-    >
+    <Button leadingIcon={<PlusIcon />} color="neutral" onClick={handleCreate}>
       Note
     </Button>
   );
 }
 
 export function CreateDirectoryButton() {
-  const { mutate: createDirectory } = useDirectoryCreateMutation();
-  const handleCreateDirectory = () => {
-    createDirectory({ name: "folder" });
-  };
-
+  const handleCreate = useNodeCreate("directory");
   return (
-    <Button
-      leadingIcon={<PlusIcon />}
-      color="neutral"
-      onClick={handleCreateDirectory}
-    >
+    <Button leadingIcon={<PlusIcon />} color="neutral" onClick={handleCreate}>
       Folder
     </Button>
   );

@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from "react";
+import { ReactNode, useCallback, useState } from "react";
 import {
   DndContext,
   DragEndEvent,
@@ -10,9 +10,17 @@ import { FileIcon, ReaderIcon } from "@radix-ui/react-icons";
 import { s, CSS } from "style/stitches.config";
 
 import { invariant } from "exception/invariant";
-import { useDirectoryMutation } from "api/directory";
-import { useNoteMutation } from "api/note";
-import { TreeNode } from "api/tree";
+import {
+  useDirectoryCreateMutation,
+  useDirectoryDeleteMutation,
+  useDirectoryMutation,
+} from "api/directory";
+import {
+  useNoteCreateMutation,
+  useNoteDeleteMutation,
+  useNoteMutation,
+} from "api/note";
+import { NodeType, TreeNode } from "api/tree";
 
 /**
  * Create a draggable wrapper for a node
@@ -96,4 +104,73 @@ export function useNoteTreeDrag() {
   );
 
   return context;
+}
+
+export function useNodeDelete(node: TreeNode) {
+  const isDirectory = node.type === "directory";
+
+  const { mutate: deleteNote } = useNoteDeleteMutation();
+  const { mutate: deleteDirectory } = useDirectoryDeleteMutation();
+  const handleDelete = () => {
+    if (isDirectory && confirm(`Delete folder "${node.name}"?`)) {
+      deleteDirectory(node.key);
+    } else if (confirm(`Delete note "${node.name}"?`)) {
+      deleteNote(node.key);
+    }
+  };
+
+  return handleDelete;
+}
+
+export function useNodeRename(node: TreeNode) {
+  const isDirectory = node.type === "directory";
+
+  const [name, setName] = useState(node.name);
+  const { mutate: mutateNote } = useNoteMutation();
+  const { mutate: mutateDirectory } = useDirectoryMutation();
+
+  const rename = () => {
+    if (name === node.name) {
+      return; // no change
+    }
+
+    const processed = name; // processNoteName(name, usedNames);
+    setName(processed);
+
+    if (isDirectory) {
+      mutateDirectory({ directory_key: node.key, name: processed });
+    } else {
+      mutateNote({ note_key: node.key, name: processed });
+    }
+  };
+
+  return {
+    name,
+    setName,
+    rename,
+  };
+}
+
+export function useNodeCopy(node: TreeNode) {
+  throw new Error("Not implemented");
+}
+
+export function useNodeMove(node: TreeNode) {
+  throw new Error("Not implemented");
+}
+
+export function useNodeCreate(
+  type: NodeType,
+  onSuccess?: (key: string) => void
+) {
+  const { mutate: createDirectory } = useDirectoryCreateMutation();
+  const { mutate: createNote } = useNoteCreateMutation();
+
+  return () => {
+    if (type === "directory") {
+      createDirectory({ name: "folder" }, { onSuccess });
+    } else {
+      createNote({ name: "new note" }, { onSuccess });
+    }
+  };
 }

@@ -1,5 +1,5 @@
 import { Button } from "component/ui/Button";
-import Field from "component/ui/Field";
+import { Field } from "component/ui/Field";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { s, styled } from "style/stitches.config";

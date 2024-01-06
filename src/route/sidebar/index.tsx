@@ -31,8 +31,6 @@ export function Sidebar() {
     navigate("/sign-in");
   };
 
-  const [editing, setEditing] = useState(false);
-
   return (
     <Root
       id="left-sidebar"
@@ -46,15 +44,8 @@ export function Sidebar() {
     >
       <Head>
         <Title to="/">📝 Notes</Title>
-        <IconButton
-          onClick={() => setEditing(!editing)}
-          css={{ ml: 8 }}
-          color={editing ? "primary" : "neutral"}
-        >
-          {editing ? <CheckIcon /> : <Pencil1Icon />}
-        </IconButton>
       </Head>
-      <NoteTree editing={editing} width={size} />
+      <NoteTree width={size} />
       <Footer>
         <Button
           leadingIcon={<ExitIcon />}
@@ -76,12 +67,7 @@ const Root = styled("aside", {
   direction: "column",
 });
 
-const Head = styled("section", {
-  p: 8,
-  d: "flex",
-  items: "center",
-  justify: "space-between",
-});
+const Head = styled("section", { p: 8 });
 const Title = styled(Link, {
   fontSize: 24,
   fontWeight: 700,

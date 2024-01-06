@@ -5,6 +5,7 @@ import {
   DragHandleDots2Icon,
   ChevronDownIcon,
   ChevronRightIcon,
+  DotsHorizontalIcon,
 } from "@radix-ui/react-icons";
 import { useNoteParams } from "route/notes/note/params";
 import { useState } from "react";
@@ -12,24 +13,18 @@ import { LoadingShim } from "component/ui/LoadingShim";
 import { NodeType, TreeNode, useNoteTreeQuery } from "api/tree";
 import { invariant } from "exception/invariant";
 import { DragOverlay, useDndContext } from "@dnd-kit/core";
-import { useDraggableNode, useNoteTreeDrag } from "./hooks";
+import { useDraggableNode, useNodeDelete, useNoteTreeDrag } from "./hooks";
 import { When } from "component/When";
 import Spacer from "component/ui/Spacer";
 import {
   CreateDirectoryButton,
   CreateNoteButton,
   DirectoryDropzone,
-  NodeDelete,
   NodeName,
 } from "./components";
+import { NodeDropdown } from "./dropdown";
 
-export function NoteTree({
-  editing,
-  width,
-}: {
-  editing: boolean;
-  width: number;
-}) {
+export function NoteTree({ width }: { width: number }) {
   const { data: tree, error, isLoading } = useNoteTreeQuery();
 
   const navigate = useNavigate();
@@ -52,7 +47,7 @@ export function NoteTree({
       <DragContext>
         <DirectoryDropzone directoryKey={null} css={{ flex: 1 }}>
           {tree?.map((node) => (
-            <NoteTreeNode key={node.key} node={node} editing={editing} />
+            <NoteTreeNode key={node.key} node={node} />
           ))}
         </DirectoryDropzone>
         <DragOverlay style={{ width: width - 8 - 8 }}>
@@ -81,7 +76,7 @@ function PreviewNode() {
   if (!active) return null; // no component being dragged
 
   const { id, data } = active;
-  //@ts-expect-error DnD-KIt lacks strict typing
+  //@ts-expect-error DnD-Kit lacks strict typing
   const { name, type } = data.current;
 
   return (
@@ -93,16 +88,16 @@ function PreviewNode() {
         type,
         children: [],
       }}
-      editing={false}
     />
   );
 }
 
-function NoteTreeNode({ node, editing }: { node: TreeNode; editing: boolean }) {
+function NoteTreeNode({ node }: { node: TreeNode }) {
   const { noteKey } = useNoteParams({ noexcept: true });
 
   const isNote = node.type === "note";
   const isDirectory = node.type === "directory";
+
   invariant(!isNote || !isDirectory, `Unknown node type: ${node}`);
 
   const [renaming, setRenaming] = useState(false);
@@ -110,14 +105,20 @@ function NoteTreeNode({ node, editing }: { node: TreeNode; editing: boolean }) {
   const Icon = getIcon(node.type, expanded);
 
   const selected = noteKey === node.key;
-
+  const [open, setOpen] = useState(false);
   const { handle: DragHandle, isDragging, ref } = useDraggableNode(node);
+
+  const navigate = useNavigate();
+  const deleteNode = useNodeDelete(node);
+  const handleDelete = () => {
+    deleteNode();
+    navigate("/");
+  };
 
   const row = (
     <>
       <NoteInner
         ref={ref}
-        selected={selected}
         expanded={expanded}
         {...(isNote
           ? { as: Link, to: node.key }
@@ -125,7 +126,7 @@ function NoteTreeNode({ node, editing }: { node: TreeNode; editing: boolean }) {
       >
         <DragHandle>
           <When
-            selector={`${NoteInner}:hover &`}
+            selector={`${NoteNodeRoot}:hover &`}
             fallback={<Icon />}
             css={{ d: "flex", items: "center", justify: "center" }}
           >
@@ -138,23 +139,39 @@ function NoteTreeNode({ node, editing }: { node: TreeNode; editing: boolean }) {
           node={node}
         />
       </NoteInner>
-      {editing && <NodeDelete node={node} />}
+      <When
+        selector={open ? true : `${NoteNodeRoot}:hover &`}
+        css={{ d: "flex", items: "center" }}
+      >
+        <NodeDropdown
+          open={open}
+          onOpenChange={setOpen}
+          onRename={() => setRenaming(true)}
+          onDelete={handleDelete}
+        />
+      </When>
     </>
   );
 
   if (isNote) {
-    return <NoteNodeRoot hide={isDragging}>{row}</NoteNodeRoot>;
+    return (
+      <NoteNodeRoot selected={selected} hide={isDragging}>
+        {row}
+      </NoteNodeRoot>
+    );
   }
 
   return (
     <>
       <DirectoryDropzone directoryKey={node.key}>
-        <NoteNodeRoot hide={isDragging}>{row}</NoteNodeRoot>
+        <NoteNodeRoot selected={selected} hide={isDragging}>
+          {row}
+        </NoteNodeRoot>
         {expanded && (
           <>
             <SubDirectories>
               {node.children?.map((child) => (
-                <NoteTreeNode key={child.key} node={child} editing={editing} />
+                <NoteTreeNode key={child.key} node={child} />
               ))}
             </SubDirectories>
             {!!node.children.length && <Spacer size="ty" />}
@@ -171,9 +188,8 @@ function getIcon(type: NodeType, expanded: boolean) {
 }
 
 const NoteInner = styled(s.div, {
-  r: 8,
   d: "grid",
-  gridTemplateColumns: "auto 1fr",
+  gridTemplateColumns: "auto 1fr auto",
   gap: 8,
   p: 8,
   items: "center",
@@ -182,30 +198,35 @@ const NoteInner = styled(s.div, {
   whiteSpace: "nowrap",
 
   variants: {
-    selected: {
-      true: { bg: "$primaryTonal", color: "$onPrimaryTonal", fontWeight: 400 },
-      false: { "&:hover": { bg: "$background3" } },
+    expanded: {
+      true: { fontWeight: 600 },
     },
-    expanded: { true: { fontWeight: 600 } },
   },
 
   defaultVariants: {
-    selected: false,
     expanded: false,
   },
 });
 const NoteNodeRoot = styled(s.div, {
+  r: 8,
+  pr: 8,
   d: "grid",
+  gap: 8,
   gridTemplateColumns: "1fr auto",
   items: "center",
   listStyle: "none",
 
   variants: {
+    selected: {
+      true: { bg: "$primaryTonal", color: "$onPrimaryTonal", fontWeight: 400 },
+      false: { "&:hover": { bg: "$background3" } },
+    },
     hide: { true: { visibility: "hidden" } },
   },
 
   defaultVariants: {
     hide: false,
+    selected: false,
   },
 });
 

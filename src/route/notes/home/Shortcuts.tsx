@@ -1,48 +1,34 @@
-import { Code } from "component/ui/Code";
+import { Shortcut } from "component/ui/Shortcut";
 import { styled } from "style/stitches.config";
 
 export function Shortcuts() {
   return (
-    <ShortcutsRoot>
-      <Shortcut>
-        <Cmd />
-        <Plus />
-        <Code>N</Code>
-        <span>Make a new note</span>
-      </Shortcut>
-      <Shortcut>
-        <Shift />
-        <Plus />
-        <Shift />
-        <span>
-          Open <strong>Command Palette</strong>
-        </span>
-      </Shortcut>
-      <Shortcut>
-        <Cmd />
-        <Plus />
-        <Code>E</Code>
-        <span>
-          Select <strong>Explorer</strong>
-        </span>
-      </Shortcut>
-    </ShortcutsRoot>
+    <List>
+      <Line>
+        <Shortcut parts={["cmd", "n"]} />
+        Create new file
+      </Line>
+      <Line>
+        <Shortcut parts={["shift", "shift"]} />
+        Open <strong>Command Palette</strong>
+      </Line>
+      <Line>
+        <Shortcut parts={["cmd", "e"]} />
+        Select <strong>Explorer</strong>
+      </Line>
+    </List>
   );
 }
 
-const ShortcutsRoot = styled("ul", {
+const List = styled("ul", {
   listStyle: "none",
   d: "flex",
   gap: 16,
   direction: "column",
 });
 
-const Shortcut = styled("li", {
+const Line = styled("li", {
   d: "flex",
   gap: 8,
   items: "center",
 });
-
-const Cmd = () => <Code>Cmd</Code>;
-const Shift = () => <Code>Shift</Code>;
-const Plus = () => <span>+</span>;
