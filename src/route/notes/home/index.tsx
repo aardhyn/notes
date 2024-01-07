@@ -1,18 +1,36 @@
 import { useTitle } from "route/useTitle";
 import { s, styled } from "style/stitches.config";
 import { Shortcuts } from "./Shortcuts";
+import { useShortcut } from "api/shortcut";
+import { useAuth } from "api/user";
+import { capitalize } from "util/string";
+import { useNavigate } from "react-router-dom";
+import { useNodeCreate } from "route/sidebar/hooks";
 
 const WAVE_SIZE = 48;
 
 export default function Home() {
   useTitle("Home");
 
+  const navigate = useNavigate();
+  const createNote = useNodeCreate("note", {
+    onSuccess(key) {
+      navigate(key);
+    },
+  });
+  useShortcut(createNote, "n");
+
+  const { user } = useAuth();
+  const { firstName, lastName } = user?.user_metadata ?? {};
+
   return (
     <Root>
       <Header>
         <s.hgroup css={{ textAlign: "center" }}>
           <Wave />
-          <h1>Greetings, Writer!</h1>
+          <h1>
+            Hi, {capitalize(firstName)} {capitalize(lastName)}
+          </h1>
         </s.hgroup>
         <Shortcuts />
       </Header>
