@@ -13,6 +13,7 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
+import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
@@ -73,7 +74,7 @@ export function Editor({
         }}
       >
         <RichTextPlugin
-          contentEditable={<ContentEditable />}
+          contentEditable={<ContentEditable autoFocus />}
           placeholder={defined(placeholder, <span>{placeholder}</span>)}
           ErrorBoundary={LexicalErrorBoundary}
         />
@@ -81,6 +82,7 @@ export function Editor({
         <HistoryPlugin />
         <OnChangePlugin onChange={handleChange} />
         <TablePlugin />
+        {!value ? <AutoFocusPlugin /> : ""}
       </LexicalComposer>
     </Root>
   );
