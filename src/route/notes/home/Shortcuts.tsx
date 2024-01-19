@@ -4,23 +4,23 @@ import { styled } from "style/stitches.config";
 export function Shortcuts() {
   return (
     <List>
-      <Line>
+      {/* <Line>
         <span>
           Create <strong>New Note</strong>
         </span>
-        <Shortcut parts={["n"]} />
-      </Line>
-      <Line>
+        <Shortcut parts={["cmd", "o"]} />
+      </Line> */}
+      {/* <Line>
         <span>
           Open <strong>Command Palette</strong>
         </span>
         <Shortcut parts={["shift", "shift"]} />
-      </Line>
+      </Line> */}
       <Line>
         <span>
           Select <strong>Explorer</strong>
         </span>
-        <Shortcut parts={["cmd", "e"]} />
+        <Shortcut parts={["cmd", "s"]} />
       </Line>
     </List>
   );
