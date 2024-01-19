@@ -11,6 +11,7 @@ import { useDebounce } from "util/useDebounce";
 import type { Note } from "api/note";
 import { LoadingShim } from "component/ui/LoadingShim";
 import { useTitle } from "route/useTitle";
+import { usePaneManager } from "route/usePaneManager";
 
 export default function Note() {
   const { noteKey } = useNoteParams();
@@ -48,12 +49,19 @@ function NoteProvider({ note }: { note: Note }) {
     });
   }, [debouncedContent, mutateNote, note.content, noteKey]);
 
+  const { selectPane, activePane } = usePaneManager();
+  const handleFocus = () => {
+    selectPane(noteKey);
+  };
+
   return (
-    <Root>
+    <Root active={!!activePane}>
       <SaveIndicator saving={isPending} />
       <Editor
         value={note?.content ?? ""}
         onChange={setContent}
+        focused={activePane === noteKey}
+        onFocus={handleFocus}
         css={{
           ...hideScrollbar, // temp: get ScrollArea working here.
 
@@ -79,4 +87,13 @@ const Root = styled("article", {
   direction: "column",
   justify: "center",
   h: "100vh",
+
+  variants: {
+    active: {
+      true: { bt: "2px solid $outline" },
+      false: { bt: "2px solid $background" },
+    },
+  },
+
+  defaultVariants: { active: false },
 });

@@ -12,6 +12,7 @@ import { signOut } from "api/user";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "component/ui/Button";
 import { ExitIcon } from "@radix-ui/react-icons";
+import { usePaneManager } from "route/usePaneManager";
 
 export function Sidebar() {
   const { bind, rangeConstraint, css, size } = useDragPanePrimitive(
@@ -30,6 +31,8 @@ export function Sidebar() {
     navigate("/sign-in");
   };
 
+  const { activeSidebar } = usePaneManager();
+
   return (
     <Root
       id="left-sidebar"
@@ -40,6 +43,7 @@ export function Sidebar() {
         ...css,
         ...rangeConstraint,
       }}
+      active={activeSidebar}
     >
       <Head>
         <Title to="/">📝 Notes</Title>
@@ -64,6 +68,17 @@ const Root = styled("aside", {
   bg: "$background2",
   d: "flex",
   direction: "column",
+
+  variants: {
+    active: {
+      true: { bt: "2px solid $outline" },
+      false: { bt: "2px solid $background2" },
+    },
+  },
+
+  defaultVariants: {
+    active: false,
+  },
 });
 
 const Head = styled("section", { p: 8 });

@@ -3,8 +3,28 @@ import { Outlet } from "react-router-dom";
 import { Sidebar } from "../sidebar";
 import { hideScrollbar } from "style/util";
 import { OpenSidebar } from "../OpenSidebar";
+import { useShortcut } from "api/shortcut";
+import { useTreeStore } from "route/sidebar/store";
+import { useNoteParams } from "./note/params";
+import { usePaneManager } from "route/usePaneManager";
 
 export default function NotesLayout() {
+  const { noteKey } = useNoteParams({ noexcept: true });
+  const { select, deselect } = useTreeStore();
+  const { selectSidebar, selectPane, activeSidebar } = usePaneManager();
+  const handleSelectSidebar = () => {
+    if (activeSidebar) {
+      // select the active note
+      deselect();
+      selectPane(noteKey);
+    } else {
+      // select the active note in the sidebar
+      selectSidebar();
+      select(noteKey);
+    }
+  };
+  useShortcut(handleSelectSidebar, "s", { modifiers: ["Control"] });
+
   return (
     <Root>
       <Sidebar />

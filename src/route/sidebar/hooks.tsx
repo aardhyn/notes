@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useState } from "react";
+import { HTMLAttributes, ReactNode, useCallback, useState } from "react";
 import {
   DndContext,
   DragEndEvent,
@@ -20,8 +20,14 @@ import {
   useNoteDeleteMutation,
   useNoteMutation,
 } from "api/note";
-import { NodeType, TreeNode } from "api/tree";
-
+import { NodeType, TreeNode } from "algorithm/tree";
+import { useShortcut } from "api/shortcut";
+import { useTreeStore } from "./store";
+import { useNavigate } from "react-router-dom";
+type HandleProps = {
+  children: ReactNode;
+  css?: CSS;
+} & HTMLAttributes<HTMLDivElement>;
 /**
  * Create a draggable wrapper for a node
  * @param node node to wrap in a draggable
@@ -37,8 +43,8 @@ export function useDraggableNode({ key, name, type, parentKey }: TreeNode) {
     },
   });
 
-  const handle = ({ children }: { children: ReactNode; css?: CSS }) => (
-    <s.div {...listeners} {...attributes}>
+  const handle = ({ children, ...props }: HandleProps) => (
+    <s.div {...listeners} {...attributes} {...props}>
       {children}
     </s.div>
   );
@@ -151,14 +157,6 @@ export function useNodeRename(node: TreeNode) {
   };
 }
 
-// export function useNodeCopy(node: TreeNode) {
-//   throw new Error("Not implemented");
-// }
-
-// export function useNodeMove(node: TreeNode) {
-//   throw new Error("Not implemented");
-// }
-
 export function useNodeCreate(
   type: NodeType,
   options?: { parentKey?: string | null; onSuccess?: (key: string) => void }
@@ -174,4 +172,46 @@ export function useNodeCreate(
       createNote({ name: "new note", directory_key: parentKey }, { onSuccess });
     }
   };
+}
+
+/**
+ * bind keyboard shortcuts for tree navigation to a reference of T
+ * @param enabled whether or not to enable shortcuts
+ * @returns reference with bound keyboard shortcuts for tree navigation
+ */
+export function useTreeShortcuts() {
+  const {
+    toggleExpansion,
+    selectChild,
+    selected,
+    selectNext,
+    selectPrevious,
+    selectParent,
+  } = useTreeStore();
+
+  const enabled = !!selected.node;
+
+  useShortcut(selectNext, "ArrowDown", { enabled });
+  useShortcut(selectPrevious, "ArrowUp", { enabled });
+
+  useShortcut(selectChild, "ArrowRight", { enabled });
+  useShortcut(selectParent, "ArrowLeft", { enabled });
+
+  const navigate = useNavigate();
+  useShortcut(
+    () => {
+      const { node } = selected;
+      if (!node) {
+        return;
+      }
+
+      if (node?.type === "directory") {
+        toggleExpansion(node);
+      } else {
+        navigate(node.key);
+      }
+    },
+    "enter",
+    { enabled }
+  );
 }
