@@ -13,7 +13,6 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
-import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
@@ -23,6 +22,7 @@ import { LinkNode } from "@lexical/link";
 import { ListNode, ListItemNode } from "@lexical/list";
 import { CSS, styled } from "style/stitches.config";
 import { defined } from "util/variable";
+import { OnFocusPlugin } from "./plugins/OnFocusPlugin";
 
 const NODES = [
   HorizontalRuleNode,
@@ -44,12 +44,20 @@ const NAMESPACE = "note-editor";
 export function Editor({
   value,
   placeholder = "",
+  readonly,
+  focused,
   onChange,
+  onBlur,
+  onFocus,
   css,
 }: {
   value: string;
   placeholder?: string;
+  readonly?: boolean;
+  focused?: boolean;
   onChange: (value: string) => void;
+  onBlur?: () => void;
+  onFocus?: () => void;
   css?: CSS;
 }) {
   const handleChange = (state: EditorState) => {
@@ -59,7 +67,15 @@ export function Editor({
     });
   };
 
-  const onInit = () => {
+  const handleFocusChange = (focused: boolean) => {
+    if (!focused) {
+      onBlur?.();
+    } else {
+      onFocus?.();
+    }
+  };
+
+  const handleInit = () => {
     $convertFromMarkdownString(value, TRANSFORMERS);
   };
 
@@ -70,7 +86,8 @@ export function Editor({
           nodes: NODES,
           namespace: NAMESPACE,
           onError: console.error,
-          editorState: onInit,
+          editorState: handleInit,
+          editable: !readonly,
         }}
       >
         <RichTextPlugin
@@ -82,7 +99,8 @@ export function Editor({
         <HistoryPlugin />
         <OnChangePlugin onChange={handleChange} />
         <TablePlugin />
-        {!value ? <AutoFocusPlugin /> : ""}
+        <OnFocusPlugin focus={focused} onFocusChange={handleFocusChange} />
+        {/* <AutoFocusPlugin /> */}
       </LexicalComposer>
     </Root>
   );
