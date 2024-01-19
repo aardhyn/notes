@@ -8,9 +8,10 @@ import {
   DotsHorizontalIcon,
 } from "@radix-ui/react-icons";
 import { useNoteParams } from "route/notes/note/params";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoadingShim } from "component/ui/LoadingShim";
-import { NodeType, TreeNode, useNoteTreeQuery } from "api/tree";
+import { useNoteTreeQuery } from "api/tree";
+import { TreeNode, NodeType } from "algorithm/tree";
 import { invariant } from "exception/invariant";
 import { DragOverlay, useDndContext } from "@dnd-kit/core";
 import {
@@ -18,18 +19,29 @@ import {
   useNodeCreate,
   useNodeDelete,
   useNoteTreeDrag,
+  useTreeShortcuts,
 } from "./hooks";
 import { When } from "component/When";
-import Spacer from "component/ui/Spacer";
 import { DirectoryDropzone, NodeName } from "./components";
 import { NodeDropdown } from "./dropdown";
+import { useTreeStore } from "./store";
 
 export function NoteTree({ width }: { width: number }) {
-  const { data: tree, error, isLoading } = useNoteTreeQuery();
+  const { load, tree } = useTreeStore();
+  const { data, error, isLoading, isSuccess } = useNoteTreeQuery();
+  const isInitialLoad = !tree.length && isLoading;
+  useEffect(() => {
+    if (isSuccess) {
+      load(data);
+    }
+  }, [isSuccess, load, data]);
+
+  useTreeShortcuts();
 
   const DragContext = useNoteTreeDrag();
 
-  if (isLoading) {
+  if (isInitialLoad) {
+    // first load, no local state
     return <LoadingShim />;
   }
 
@@ -85,15 +97,16 @@ function NoteTreeNode({ node }: { node: TreeNode }) {
   const { noteKey } = useNoteParams({ noexcept: true });
   const navigate = useNavigate();
 
+  const { isSelected, select, toggleExpansion, isExpanded } = useTreeStore();
+
   const isNote = node.type === "note";
   const isDirectory = node.type === "directory";
-  const selected = noteKey === node.key;
+  const isActive = noteKey === node.key;
 
   invariant(!isNote || !isDirectory, `Unknown node type: ${node}`);
 
-  const [open, setOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [renaming, setRenaming] = useState(false);
-  const [expanded, setExpanded] = useState(false);
 
   const { handle: DragHandle, isDragging, ref } = useDraggableNode(node);
 
@@ -117,22 +130,28 @@ function NoteTreeNode({ node }: { node: TreeNode }) {
   });
 
   const handleNodeCopyLink = () => {
+    // todo: move this logic away from here
     const location = window.location.href;
-    const url = `${location}${location.endsWith("/") ? "" : "/"}${node.key}`;
+    const slug = (location.endsWith("/") ? "" : "/") + node.key;
+    const url = location + slug;
+
     navigator.clipboard.writeText(url);
   };
 
-  const Icon = getIcon(node.type, expanded);
+  const handleClick = () => {
+    select(node.key);
+    if (isNote) {
+      navigate(node.key);
+    } else {
+      toggleExpansion(node);
+    }
+  };
+
+  const Icon = getIcon(node.type, isExpanded(node));
 
   const row = (
     <>
-      <NoteInner
-        ref={ref}
-        expanded={expanded}
-        {...(isNote
-          ? { as: Link, to: node.key }
-          : { as: s.button, onClick: () => setExpanded(!expanded) })}
-      >
+      <NoteInner ref={ref} expanded={isExpanded(node)} onClick={handleClick}>
         <DragHandle>
           <When
             condition={`${NoteNodeRoot}:hover &`}
@@ -148,52 +167,47 @@ function NoteTreeNode({ node }: { node: TreeNode }) {
           node={node}
         />
       </NoteInner>
-      <When
-        condition={open ? true : `${NoteNodeRoot}:hover &`}
-        css={{ h: "100%" }}
+      <NodeDropdown
+        type={node.type}
+        open={dropdownOpen}
+        onOpenChange={setDropdownOpen}
+        onRename={() => setRenaming(true)}
+        onDelete={handleDelete}
+        onCreateSubdirectory={handleDirectoryCreate}
+        onCreateNote={handleNoteCreate}
+        onCopyNodeLink={handleNodeCopyLink}
       >
-        <NodeDropdown
-          type={node.type}
-          open={open}
-          onOpenChange={setOpen}
-          onRename={() => setRenaming(true)}
-          onDelete={handleDelete}
-          onCreateSubdirectory={handleDirectoryCreate}
-          onCreateNote={handleNoteCreate}
-          onCopyNodeLink={handleNodeCopyLink}
-        >
-          <DropdownButton>
-            <DotsHorizontalIcon />
-          </DropdownButton>
-        </NodeDropdown>
-      </When>
+        <DropdownButton tabIndex={-1}>
+          <DotsHorizontalIcon />
+        </DropdownButton>
+      </NodeDropdown>
     </>
   );
 
   const id = "node-" + node.key;
+  const nodeProps = {
+    id,
+    tabIndex: -1,
+    selected: isSelected(node),
+    open: isActive,
+    hide: isDragging,
+  };
 
   if (isNote) {
-    return (
-      <NoteNodeRoot selected={selected} hide={isDragging} id={id}>
-        {row}
-      </NoteNodeRoot>
-    );
+    return <NoteNodeRoot {...nodeProps}>{row}</NoteNodeRoot>;
   }
 
   return (
     <>
       <DirectoryDropzone directoryKey={node.key}>
-        <NoteNodeRoot selected={selected} hide={isDragging} id={id}>
-          {row}
-        </NoteNodeRoot>
-        {expanded && (
+        <NoteNodeRoot {...nodeProps}>{row}</NoteNodeRoot>
+        {isExpanded(node) && (
           <>
             <SubDirectories>
               {node.children?.map((child) => (
                 <NoteTreeNode key={child.key} node={child} />
               ))}
             </SubDirectories>
-            {!!node.children.length && <Spacer size="ty" />}
           </>
         )}
       </DirectoryDropzone>
@@ -206,9 +220,34 @@ function getIcon(type: NodeType, expanded: boolean) {
   return expanded ? ChevronDownIcon : ChevronRightIcon;
 }
 
-const NoteInner = styled(s.div, {
+const NoteNodeRoot = styled(s.div, {
+  r: 8,
+  d: "grid",
+  gap: 8,
+  gridTemplateColumns: "1fr auto",
+  items: "center",
+
+  variants: {
+    open: {
+      true: { color: "$onPrimaryTonal" },
+    },
+    selected: {
+      true: { bg: "$primaryTonal" },
+      false: { "&:hover": { bg: "$background3" } },
+    },
+    hide: { true: { visibility: "hidden" } },
+  },
+
+  defaultVariants: {
+    hide: false,
+    selected: false,
+  },
+});
+const NoteInner = styled(s.button, {
+  all: "unset",
   d: "grid",
   gridTemplateColumns: "auto 1fr auto",
+  userSelect: "none",
   gap: 8,
   p: 8,
   items: "center",
@@ -224,27 +263,6 @@ const NoteInner = styled(s.div, {
 
   defaultVariants: {
     expanded: false,
-  },
-});
-const NoteNodeRoot = styled(s.div, {
-  r: 8,
-  d: "grid",
-  gap: 8,
-  gridTemplateColumns: "1fr auto",
-  items: "center",
-  listStyle: "none",
-
-  variants: {
-    selected: {
-      true: { bg: "$primaryTonal", color: "$onPrimaryTonal", fontWeight: 400 },
-      false: { "&:hover": { bg: "$background3" } },
-    },
-    hide: { true: { visibility: "hidden" } },
-  },
-
-  defaultVariants: {
-    hide: false,
-    selected: false,
   },
 });
 const DropdownButton = styled(s.button, {
