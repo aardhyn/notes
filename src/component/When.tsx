@@ -2,8 +2,8 @@ import { HTMLAttributes, ReactNode, forwardRef } from "react";
 import { s, CSS } from "style/stitches.config";
 
 type WhenProps = {
-  condition: `${string} &` | boolean;
-  children?: ReactNode;
+  condition: `${string} &` | `&${string}` | boolean;
+  children?: ReactNode | JSX.Element;
   css?: CSS;
   fallback?: ReactNode;
 } & HTMLAttributes<HTMLDivElement>;
