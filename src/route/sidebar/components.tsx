@@ -1,11 +1,9 @@
 import { useDroppable } from "@dnd-kit/core";
-import { PlusIcon } from "@radix-ui/react-icons";
-import { TreeNode } from "api/tree";
-import { Button } from "component/ui/Button";
 import { Field } from "component/ui/Field";
 import { ReactNode, useEffect, useRef } from "react";
 import { styled, CSS } from "style/stitches.config";
-import { useNodeCreate, useNodeRename } from "./hooks";
+import { useNodeRename } from "./hooks";
+import { TreeNode } from "algorithm/tree";
 
 export function NodeName({
   renaming,
@@ -32,7 +30,7 @@ export function NodeName({
   }, [renaming]);
 
   if (!renaming) {
-    return <span onDoubleClick={() => onRenamingChange(true)}>{name}</span>;
+    return <span>{name}</span>;
   }
 
   return (
@@ -45,39 +43,20 @@ export function NodeName({
       onKeyDown={(key) => {
         if (key === "Enter") {
           handleRename();
+        } else if (key === "Escape") {
+          // revert name and close
+          setName(node.name);
+          onRenamingChange(false);
         }
       }}
     />
   );
 }
-
 const NodeNameRoot = styled(Field, {
   flex: 1,
   p: "unset",
   h: "unset",
 });
-
-export function CreateNoteButton({
-  onSuccess,
-}: {
-  onSuccess: (noteKey: string) => void;
-}) {
-  const handleCreate = useNodeCreate("note", { onSuccess });
-  return (
-    <Button leadingIcon={<PlusIcon />} color="neutral" onClick={handleCreate}>
-      Note
-    </Button>
-  );
-}
-
-export function CreateDirectoryButton() {
-  const handleCreate = useNodeCreate("directory");
-  return (
-    <Button leadingIcon={<PlusIcon />} color="neutral" onClick={handleCreate}>
-      Folder
-    </Button>
-  );
-}
 
 export function DirectoryDropzone({
   children,
