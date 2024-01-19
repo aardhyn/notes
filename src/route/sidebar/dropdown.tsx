@@ -1,4 +1,3 @@
-import { NodeType } from "api/tree";
 import { When } from "component/When";
 import {
   Dropdown,
