@@ -13,6 +13,9 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+
+import { OnFocusPlugin } from "./plugins/OnFocusPlugin";
 
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
@@ -22,7 +25,6 @@ import { LinkNode } from "@lexical/link";
 import { ListNode, ListItemNode } from "@lexical/list";
 import { CSS, styled } from "style/stitches.config";
 import { defined } from "util/variable";
-import { OnFocusPlugin } from "./plugins/OnFocusPlugin";
 
 const NODES = [
   HorizontalRuleNode,
@@ -96,6 +98,7 @@ export function Editor({
           ErrorBoundary={LexicalErrorBoundary}
         />
         <MarkdownShortcutPlugin />
+        <ListPlugin />
         <HistoryPlugin />
         <OnChangePlugin onChange={handleChange} />
         <TablePlugin />
