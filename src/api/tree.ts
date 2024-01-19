@@ -1,78 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { SimpleDirectory, listDirectories } from "./directory";
-import { SimpleNote, listNotes } from "./note";
-
-// utilities //
-
-export type NodeType = "directory" | "note";
-
-function isRootDirectory(directory: SimpleDirectory) {
-  return !directory.parent_key;
-}
-function isRootNote(note: SimpleNote) {
-  return !note.directory_key;
-}
-function subDirectoryOf(parent: SimpleDirectory) {
-  return (child: SimpleDirectory) => child.parent_key === parent.directory_key;
-}
-function childOf(parent: SimpleDirectory) {
-  return (child: SimpleNote) => child.directory_key === parent.directory_key;
-}
-
-type DirectoryNode = { type: "directory"; children: TreeNode[] } & Pick<
-  SimpleDirectory,
-  "name"
->;
-type NoteNode = { type: "note" } & Pick<SimpleNote, "name">;
-export type TreeNode = { key: string; parentKey: string | null } & (
-  | DirectoryNode
-  | NoteNode
-);
-function toNoteNode(note: SimpleNote): TreeNode {
-  return {
-    key: note.note_key,
-    name: note.name,
-    type: "note",
-    parentKey: note.directory_key,
-  };
-}
-
-export type Named = { name: string };
-function alphabetically(a: Named, b: Named) {
-  return a.name.localeCompare(b.name);
-}
-
-// tree //
-
-function createTreeBuilder(
-  notes: SimpleNote[],
-  directories: SimpleDirectory[]
-) {
-  const buildTree = (root: SimpleDirectory): TreeNode => {
-    // filter children
-    const subdirectories = directories.filter(subDirectoryOf(root));
-    const childNotes = notes.filter(childOf(root)).map(toNoteNode);
-
-    // build subtrees
-    const subTrees = subdirectories.map(buildTree);
-
-    // sort children
-    const children = [...subTrees, ...childNotes];
-    const sortedSubTrees = children.sort(alphabetically);
-
-    // build node
-    const node: TreeNode = {
-      type: "directory",
-      parentKey: root.parent_key,
-      key: root.directory_key,
-      name: root.name,
-      children: sortedSubTrees,
-    };
-    return node;
-  };
-
-  return buildTree;
-}
+import { listDirectories } from "./directory";
+import { listNotes } from "./note";
+import {
+  toNoteNode,
+  createTreeBuilder,
+  isRootDirectory,
+  isRootNote,
+} from "algorithm/tree";
 
 // api //
 
