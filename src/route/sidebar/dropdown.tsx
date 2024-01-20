@@ -1,3 +1,4 @@
+import { NodeType } from "algorithm/tree";
 import { When } from "component/When";
 import {
   Dropdown,
