@@ -10,15 +10,24 @@ import DragHandle from "component/DragPane/DragHandle";
 import { NoteTree } from "./Tree";
 import { signOut } from "api/user";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, IconButton } from "component/ui/Button";
+import {
+  Button,
+  ButtonLink,
+  IconButton,
+  IconButtonLink,
+} from "component/ui/Button";
 import {
   CardStackPlusIcon,
   ExitIcon,
   FilePlusIcon,
+  GitHubLogoIcon,
 } from "@radix-ui/react-icons";
 import { usePaneManager } from "route/usePaneManager";
 import { useTreeStore } from "./store";
 import { useNodeCreate } from "./hooks";
+
+const NEW_GITHUB_ISSUE =
+  "https://github.com/AardhynLavender/note-app-react/issues/new";
 
 export function Sidebar() {
   const { bind, rangeConstraint, css, size } = useDragPanePrimitive(
@@ -65,6 +74,13 @@ export function Sidebar() {
         >
           Sign out
         </Button>
+        <IconButtonLink
+          size="medium"
+          to={NEW_GITHUB_ISSUE}
+          css={{ h: 36, w: 36 }}
+        >
+          <GitHubLogoIcon />
+        </IconButtonLink>
       </Footer>
       <DragHandle {...bind()} size={6} anchor="right" />
     </Root>
@@ -130,4 +146,5 @@ const ActionsRoot = styled("div", {
 const Footer = styled("section", {
   d: "flex",
   p: 8,
+  gap: 8,
 });
