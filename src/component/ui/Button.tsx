@@ -118,7 +118,7 @@ const IconButtonRoot = styled(s.button, {
   justify: "center",
   cursor: "pointer",
 
-  // "&:hover": { background: "$background4" },
+  "&:hover": { background: "$background4" },
   "&:disabled": { opacity: 0.5 },
   "&:readonly": { opacity: 0.5 },
 

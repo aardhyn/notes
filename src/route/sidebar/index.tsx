@@ -10,9 +10,15 @@ import DragHandle from "component/DragPane/DragHandle";
 import { NoteTree } from "./Tree";
 import { signOut } from "api/user";
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "component/ui/Button";
-import { ExitIcon } from "@radix-ui/react-icons";
+import { Button, IconButton } from "component/ui/Button";
+import {
+  CardStackPlusIcon,
+  ExitIcon,
+  FilePlusIcon,
+} from "@radix-ui/react-icons";
 import { usePaneManager } from "route/usePaneManager";
+import { useTreeStore } from "./store";
+import { useNodeCreate } from "./hooks";
 
 export function Sidebar() {
   const { bind, rangeConstraint, css, size } = useDragPanePrimitive(
@@ -47,6 +53,7 @@ export function Sidebar() {
     >
       <Head>
         <Title to="/">📝 Notes</Title>
+        <Actions />
       </Head>
       <NoteTree width={size} />
       <Footer>
@@ -81,11 +88,45 @@ const Root = styled("aside", {
   },
 });
 
-const Head = styled("section", { p: 8 });
+function Actions() {
+  const { selected, select } = useTreeStore();
+  const parentKey = selected?.parent?.key ?? null;
+
+  const handleNodeCreateSuccess = (key: string) => {
+    select(key);
+  };
+
+  const handleCreateDirectory = useNodeCreate("directory", {
+    parentKey,
+    onSuccess: handleNodeCreateSuccess,
+  });
+  const handleCreateNote = useNodeCreate("note", {
+    parentKey,
+    onSuccess: handleNodeCreateSuccess,
+  });
+
+  return (
+    <ActionsRoot>
+      <IconButton size="medium" onClick={handleCreateDirectory}>
+        <CardStackPlusIcon />
+      </IconButton>
+      <IconButton size="medium" onClick={handleCreateNote}>
+        <FilePlusIcon />
+      </IconButton>
+    </ActionsRoot>
+  );
+}
+const Head = styled("section", { p: 8, d: "flex", justify: "space-between" });
 const Title = styled(Link, {
   fontSize: 24,
   fontWeight: 700,
 });
+const ActionsRoot = styled("div", {
+  d: "flex",
+  gap: 8,
+  items: "center",
+});
+
 const Footer = styled("section", {
   d: "flex",
   p: 8,
