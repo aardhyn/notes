@@ -69,28 +69,29 @@ export function useNoteTreeDrag() {
       const dropType = event?.over?.data.current?.type;
       invariant(dropType, `Unknown drop type for node: ${event.over}`);
 
-      const selfDrag = event.active.data.current?.parentKey === event.over?.id;
+      const selfDrag = event.active.id === event.over?.id; // user dragged a node into itself
+      const dumbDrag = event.active.data.current?.parentKey === event.over?.id; // user dragged a node into its own parent
+      const badDrag = dropType !== "directory"; // user dragged a node onto a note
+      if (badDrag || selfDrag || dumbDrag) return;
 
-      if (dropType === "directory" && !selfDrag) {
-        const dragType = event.active.data.current?.type;
-        invariant(dragType, `Unknown drag type for node: ${event.active}`);
+      const dragType = event.active.data.current?.type;
+      invariant(dragType, `Unknown drag type for node: ${event.active}`);
 
-        const keyToMove = event.active.id.toString();
-        const newParent = event.over?.id.toString() || null;
+      const keyToMove = event.active.id.toString();
+      const newParent = event.over?.id.toString() || null;
 
-        if (dragType === "directory") {
-          // move directory
-          mutateDirectory({
-            directory_key: keyToMove,
-            parent_key: newParent,
-          });
-        } else {
-          // move note
-          mutateNote({
-            note_key: keyToMove,
-            directory_key: newParent,
-          });
-        }
+      if (dragType === "directory") {
+        // move directory
+        mutateDirectory({
+          directory_key: keyToMove,
+          parent_key: newParent,
+        });
+      } else {
+        // move note
+        mutateNote({
+          note_key: keyToMove,
+          directory_key: newParent,
+        });
       }
     },
     [mutateDirectory, mutateNote]
