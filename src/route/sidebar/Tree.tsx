@@ -25,6 +25,7 @@ import { When } from "component/When";
 import { DirectoryDropzone, NodeName } from "./components";
 import { NodeDropdown } from "./dropdown";
 import { useTreeStore } from "./store";
+import { usePaneManager } from "route/usePaneManager";
 
 export function NoteTree({ width }: { width: number }) {
   const { load, tree } = useTreeStore();
@@ -138,7 +139,9 @@ function NoteTreeNode({ node }: { node: TreeNode }) {
     navigator.clipboard.writeText(url);
   };
 
+  const { selectSidebar } = usePaneManager();
   const handleClick = () => {
+    selectSidebar();
     select(node.key);
     if (isNote) {
       navigate(node.key);

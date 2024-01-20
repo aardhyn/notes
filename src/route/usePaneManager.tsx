@@ -17,7 +17,7 @@ type State = {
   sidebarOpen: boolean;
 };
 type Actions = {
-  selectPane: (pane: string) => void;
+  selectPane: (pane: string | null) => void;
   selectSidebar: () => void;
   addPane: (pane: string, select: boolean) => void;
   removePane: (pane: string, fallbackSelection: string | null) => void;
@@ -48,7 +48,9 @@ const usePaneStore = create<Store>()(
 
       selectPane(pane) {
         set((state) => {
-          state.activeSidebar = false;
+          if (pane) {
+            state.activeSidebar = false;
+          }
           state.activePane = pane;
         });
       },

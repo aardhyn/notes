@@ -54,6 +54,10 @@ function NoteProvider({ note }: { note: Note }) {
     selectPane(noteKey);
   };
 
+  const handleBlur = () => {
+    selectPane(null); // todo: could be problematic if we have multiple notes open.
+  };
+
   return (
     <Root active={!!activePane}>
       <SaveIndicator saving={isPending} />
@@ -62,6 +66,7 @@ function NoteProvider({ note }: { note: Note }) {
         onChange={setContent}
         focused={activePane === noteKey}
         onFocus={handleFocus}
+        onBlur={handleBlur}
         css={{
           ...hideScrollbar, // temp: get ScrollArea working here.
 
