@@ -10,12 +10,7 @@ import DragHandle from "component/DragPane/DragHandle";
 import { NoteTree } from "./Tree";
 import { signOut } from "api/user";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Button,
-  ButtonLink,
-  IconButton,
-  IconButtonLink,
-} from "component/ui/Button";
+import { Button, IconButton, IconButtonLink } from "component/ui/Button";
 import {
   CardStackPlusIcon,
   ExitIcon,
