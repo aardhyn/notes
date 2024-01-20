@@ -7,12 +7,19 @@ type ButtonProps = {
   css?: CSS;
 } & VariantProps<typeof ButtonRoot> &
   ButtonHTMLAttributes<HTMLButtonElement>;
-
-type TextButtonProps = {
+type IconProps = {
   leadingIcon?: ReactNode;
   trailingIcon?: ReactNode;
-} & ButtonProps;
+};
+type TextButtonProps = IconProps & ButtonProps;
 
+/**
+ * A button with text content
+ * @param children content of the button
+ * @param leadingIcon icon to display before the content
+ * @param trailingIcon icon to display after the content
+ * @returns
+ */
 export function Button({
   children,
   leadingIcon,
@@ -28,7 +35,13 @@ export function Button({
   );
 }
 
-export function IconButton({ children, ...buttonProps }: ButtonProps) {
+type IconButtonProps = Omit<ButtonProps, keyof IconProps>;
+/**
+ * A button with an icon
+ * @param children content of the button
+ * @returns
+ */
+export function IconButton({ children, ...buttonProps }: IconButtonProps) {
   return <IconButtonRoot {...buttonProps}>{children}</IconButtonRoot>;
 }
 
@@ -44,6 +57,17 @@ export function ButtonLink({
       {children}
       {trailingIcon && trailingIcon}
     </ButtonRoot>
+  );
+}
+
+export function IconButtonLink({
+  children,
+  ...buttonProps
+}: IconButtonProps & LinkProps) {
+  return (
+    <IconButtonRoot as={Link} {...buttonProps}>
+      {children}
+    </IconButtonRoot>
   );
 }
 
@@ -121,6 +145,8 @@ const IconButtonRoot = styled(s.button, {
   "&:hover": { background: "$background4" },
   "&:disabled": { opacity: 0.5 },
   "&:readonly": { opacity: 0.5 },
+
+  "&>*": { w: "60%", h: "60%" },
 
   variants: {
     size: {
