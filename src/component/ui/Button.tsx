@@ -146,8 +146,6 @@ const IconButtonRoot = styled(s.button, {
   "&:disabled": { opacity: 0.5 },
   "&:readonly": { opacity: 0.5 },
 
-  "&>*": { w: "60%", h: "60%" },
-
   variants: {
     size: {
       small: { h: 24, w: 24, r: 4 },
