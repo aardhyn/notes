@@ -4,8 +4,13 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host",
-    "build": "tsc && vite build",
+    "dev": "pnpm dev:web",
+    "dev:web": "vite --host",
+    "dev:desktop": "pnpm tauri dev",
+    "build": "pnpm build:web",
+    "build:web": "pnpm typecheck && vite build",
+    "build:desktop": "pnpm tauri build",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -41,6 +46,7 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^1.5.9",
     "@types/node": "^20.10.4",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
