@@ -125,12 +125,15 @@ export function SignInForm({
 }
 
 const Root = styled(s.form, {
-  minW: 512,
+  w: 512,
+  maxW: "100%",
   d: "flex",
   direction: "column",
   gap: 32,
-  padding: "32px 24px",
-  background: "$background2",
+  py: 32,
+  px: 24,
+  m: 16,
+  bg: "$background2",
   r: 16,
 });
 const TwoColumn = styled(s.div, {

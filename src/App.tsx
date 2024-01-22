@@ -29,7 +29,9 @@ const Root = styled("div", {
   maxW: "100vw",
   maxH: "100vh",
 
-  background: "$background",
-  color: "$text",
+  overflow: "hidden",
+
+  bg: "$background",
+  c: "$text",
   fontFamily: "$main",
 });
