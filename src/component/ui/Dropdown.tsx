@@ -13,12 +13,10 @@ export function Dropdown({
   return (
     <DropdownMenu.Root {...props}>
       <DropdownMenu.Trigger asChild>{trigger}</DropdownMenu.Trigger>
-      {/* <DropdownMenu.Portal> */}
       <DropdownMenuContent>
         {children}
         <DropdownMenuArrow />
       </DropdownMenuContent>
-      {/* </DropdownMenu.Portal> */}
     </DropdownMenu.Root>
   );
 }
@@ -38,9 +36,6 @@ export function DropdownItem({
   );
 }
 
-// const contentStyles = {
-// };
-
 const DropdownMenuContent = styled(DropdownMenu.Content, {
   minW: 200,
   z: 1024,
@@ -49,10 +44,6 @@ const DropdownMenuContent = styled(DropdownMenu.Content, {
   r: 8,
   p: 4,
 });
-// export const DropdownMenuSubContent = styled(
-//   DropdownMenu.SubContent,
-//   contentStyles
-// );
 
 const DropdownMenuArrow = styled(DropdownMenu.Arrow, { fill: "$outline" });
 
@@ -75,15 +66,6 @@ const itemStyles: CSS = {
 };
 
 const DropdownMenuItemRoot = styled(DropdownMenu.Item, itemStyles);
-// const DropdownMenuCheckboxItem = styled(DropdownMenu.CheckboxItem, itemStyles);
-// const DropdownMenuRadioItem = styled(DropdownMenu.RadioItem, itemStyles);
-// const DropdownMenuSubTrigger = styled(DropdownMenu.SubTrigger, {
-//   '&[data-state="open"]': {
-//     backgroundColor: violet.violet4,
-//     color: violet.violet11,
-//   },
-//   ...itemStyles,
-// });
 
 export const DropdownMenuLabel = styled(DropdownMenu.Label, {
   pl: 24,
@@ -95,15 +77,6 @@ export const DropdownSeparator = styled(DropdownMenu.Separator, {
   bg: "$outline",
   m: 4,
 });
-
-// const DropdownMenuItemIndicator = styled(DropdownMenu.ItemIndicator, {
-//   position: "absolute",
-//   left: 0,
-//   width: 25,
-//   display: "inline-flex",
-//   alignItems: "center",
-//   justifyContent: "center",
-// });
 
 const RightSlot = styled("div", {
   ml: "auto",

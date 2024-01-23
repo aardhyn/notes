@@ -5,7 +5,6 @@ import {
   DragHandleDots2Icon,
   ChevronDownIcon,
   ChevronRightIcon,
-  DotsHorizontalIcon,
 } from "@radix-ui/react-icons";
 import { useNoteParams } from "route/notes/note/params";
 import { useEffect, useState } from "react";
@@ -23,7 +22,7 @@ import {
 } from "./hooks";
 import { When } from "component/When";
 import { DirectoryDropzone, NodeName } from "./components";
-import { NodeDropdown } from "./dropdown";
+import { NodeContext } from "./context";
 import { useTreeStore } from "./store";
 import { usePaneManager } from "route/usePaneManager";
 
@@ -106,7 +105,6 @@ function NoteTreeNode({ node }: { node: TreeNode }) {
 
   invariant(!isNote || !isDirectory, `Unknown node type: ${node}`);
 
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [renaming, setRenaming] = useState(false);
 
   const { handle: DragHandle, isDragging, ref } = useDraggableNode(node);
@@ -136,13 +134,15 @@ function NoteTreeNode({ node }: { node: TreeNode }) {
   };
 
   const { selectSidebar } = usePaneManager();
-  const handleClick = () => {
+  const handleExpand = () => {
+    selectSidebar();
+    toggleExpansion(node);
+  };
+  const handleSelect = () => {
     selectSidebar();
     select(node.key);
     if (isNote) {
       navigate(node.key);
-    } else {
-      toggleExpansion(node);
     }
   };
 
@@ -150,56 +150,56 @@ function NoteTreeNode({ node }: { node: TreeNode }) {
 
   const row = (
     <>
-      <NoteInner ref={ref} expanded={isExpanded(node)} onClick={handleClick}>
-        <DragHandle>
-          <When
-            condition={`${NoteNodeRoot}:hover &`}
-            fallback={<Icon />}
-            css={{ d: "flex", items: "center", justify: "center" }}
-          >
-            <DragHandleDots2Icon />
-          </When>
-        </DragHandle>
-        <NodeName
-          renaming={renaming}
-          onRenamingChange={setRenaming}
-          node={node}
-        />
-      </NoteInner>
-      <NodeDropdown
+      <NodeContext
         type={node.type}
-        open={dropdownOpen}
-        onOpenChange={setDropdownOpen}
         onRename={() => setRenaming(true)}
         onDelete={handleDelete}
         onCreateSubdirectory={handleDirectoryCreate}
         onCreateNote={handleNoteCreate}
         onCopyNodeLink={handleNodeCopyLink}
       >
-        <DropdownButton tabIndex={-1}>
-          <DotsHorizontalIcon />
-        </DropdownButton>
-      </NodeDropdown>
+        <NoteInner expanded={isExpanded(node)} onClick={handleSelect}>
+          <Icon onClick={isNote ? handleSelect : handleExpand} />
+          <NodeName
+            renaming={renaming}
+            onRenamingChange={setRenaming}
+            node={node}
+          />
+        </NoteInner>
+      </NodeContext>
+      <DragHandle>
+        <When
+          condition={`${NoteNodeRoot}:hover &`}
+          css={{ d: "flex", items: "center", justify: "center", p: 8 }}
+        >
+          <DragHandleDots2Icon />
+        </When>
+      </DragHandle>
     </>
   );
 
   const id = "node-" + node.key;
   const nodeProps = {
     id,
-    tabIndex: -1,
     selected: isSelected(node),
     open: isActive,
     hide: isDragging,
   };
 
   if (isNote) {
-    return <NoteNodeRoot {...nodeProps}>{row}</NoteNodeRoot>;
+    return (
+      <NoteNodeRoot ref={ref} {...nodeProps}>
+        {row}
+      </NoteNodeRoot>
+    );
   }
 
   return (
     <>
       <DirectoryDropzone directoryKey={node.key}>
-        <NoteNodeRoot {...nodeProps}>{row}</NoteNodeRoot>
+        <NoteNodeRoot ref={ref} {...nodeProps}>
+          {row}
+        </NoteNodeRoot>
         {isExpanded(node) && (
           <>
             <SubDirectories>
@@ -245,14 +245,11 @@ const NoteNodeRoot = styled(s.div, {
 const NoteInner = styled(s.button, {
   all: "unset",
   d: "grid",
-  gridTemplateColumns: "auto 1fr auto",
-  userSelect: "none",
+  gridTemplateColumns: "auto 1fr",
+  w: "100%",
   gap: 8,
   p: 8,
   items: "center",
-  overflow: "hidden",
-  textOverflow: "ellipsis",
-  whiteSpace: "nowrap",
 
   variants: {
     expanded: {
@@ -263,12 +260,6 @@ const NoteInner = styled(s.button, {
   defaultVariants: {
     expanded: false,
   },
-});
-const DropdownButton = styled(s.button, {
-  h: "100%",
-  w: 24,
-  d: "flex",
-  items: "center",
 });
 
 const SubDirectories = styled("div", {

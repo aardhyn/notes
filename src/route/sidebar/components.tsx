@@ -1,7 +1,7 @@
 import { useDroppable } from "@dnd-kit/core";
 import { Field } from "component/ui/Field";
 import { ReactNode, useEffect, useRef } from "react";
-import { styled, CSS } from "style/stitches.config";
+import { styled, CSS, s } from "style/stitches.config";
 import { useNodeRename } from "./hooks";
 import { TreeNode } from "algorithm/tree";
 
@@ -19,15 +19,13 @@ export function NodeName({
   // focus and select input when renaming
   const ref = useRef<HTMLInputElement>(null);
   useEffect(() => {
-    if (renaming) {
-      ref.current?.focus();
-      ref.current?.select();
-    }
+    if (!renaming) return;
+    ref.current?.focus();
+    ref.current?.select();
   }, [renaming]);
 
-  // no renaming, render non-interactive span
   if (!renaming) {
-    return <span>{name}</span>;
+    return <NodeNameReadonly>{name}</NodeNameReadonly>;
   }
 
   const handleRename = () => {
@@ -46,7 +44,7 @@ export function NodeName({
   };
 
   return (
-    <NodeNameRoot
+    <NodeNameEditable
       ref={ref}
       variant="stealth"
       value={name}
@@ -56,10 +54,16 @@ export function NodeName({
     />
   );
 }
-const NodeNameRoot = styled(Field, {
-  flex: 1,
+const NodeNameEditable = styled(Field, {
+  d: "flex",
   p: "unset",
   h: "unset",
+});
+const NodeNameReadonly = styled("span", {
+  textOverflow: "ellipsis",
+  overflow: "hidden",
+  whiteSpace: "nowrap",
+  pr: 4,
 });
 
 export function DirectoryDropzone({
