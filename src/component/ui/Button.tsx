@@ -3,15 +3,15 @@ import { ButtonHTMLAttributes, ReactNode } from "react";
 import { Link, LinkProps } from "react-router-dom";
 import { s, styled, CSS } from "style/stitches.config";
 
-type ButtonProps = {
+type ButtonProps<C extends typeof ButtonRoot | typeof IconButtonRoot> = {
   css?: CSS;
-} & VariantProps<typeof ButtonRoot> &
+} & VariantProps<C> &
   ButtonHTMLAttributes<HTMLButtonElement>;
 type IconProps = {
   leadingIcon?: ReactNode;
   trailingIcon?: ReactNode;
 };
-type TextButtonProps = IconProps & ButtonProps;
+type TextButtonProps = IconProps & ButtonProps<typeof ButtonRoot>;
 
 /**
  * A button with text content
@@ -35,7 +35,10 @@ export function Button({
   );
 }
 
-type IconButtonProps = Omit<ButtonProps, keyof IconProps>;
+type IconButtonProps = Omit<
+  ButtonProps<typeof IconButtonRoot>,
+  keyof IconProps
+>;
 /**
  * A button with an icon
  * @param children content of the button
@@ -142,7 +145,6 @@ const IconButtonRoot = styled(s.button, {
   justify: "center",
   cursor: "pointer",
 
-  "&:hover": { background: "$background4" },
   "&:disabled": { opacity: 0.5 },
   "&:readonly": { opacity: 0.5 },
 
@@ -152,6 +154,14 @@ const IconButtonRoot = styled(s.button, {
       medium: { h: 32, w: 32, r: 8 },
       large: { h: 48, w: 48, r: 8 },
     },
+    variant: {
+      stealth: {
+        "&:hover": { background: "transparent" },
+      },
+      plain: {
+        "&:hover": { background: "$background4" },
+      },
+    },
     expand: {
       true: { flex: 1 },
     },
@@ -160,6 +170,5 @@ const IconButtonRoot = styled(s.button, {
 
   defaultVariants: {
     size: "small",
-    // color: "neutral",
   },
 });

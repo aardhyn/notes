@@ -15,10 +15,6 @@ export function NodeName({
   node: TreeNode;
 }) {
   const { name, setName, rename } = useNodeRename(node);
-  const handleRename = () => {
-    onRenamingChange(false);
-    rename();
-  };
 
   // focus and select input when renaming
   const ref = useRef<HTMLInputElement>(null);
@@ -29,9 +25,25 @@ export function NodeName({
     }
   }, [renaming]);
 
+  // no renaming, render non-interactive span
   if (!renaming) {
     return <span>{name}</span>;
   }
+
+  const handleRename = () => {
+    onRenamingChange(false);
+    rename();
+  };
+
+  const handleKeyDown = (key: string) => {
+    if (key === "Enter") {
+      handleRename();
+    } else if (key === "Escape") {
+      // revert name and close
+      setName(node.name);
+      onRenamingChange(false);
+    }
+  };
 
   return (
     <NodeNameRoot
@@ -39,16 +51,7 @@ export function NodeName({
       variant="stealth"
       value={name}
       onValueChange={setName}
-      onBlur={handleRename}
-      onKeyDown={(key) => {
-        if (key === "Enter") {
-          handleRename();
-        } else if (key === "Escape") {
-          // revert name and close
-          setName(node.name);
-          onRenamingChange(false);
-        }
-      }}
+      onKeyDown={handleKeyDown}
     />
   );
 }
