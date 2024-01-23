@@ -50,6 +50,7 @@ export function NodeName({
       ref={ref}
       variant="stealth"
       value={name}
+      onBlur={handleRename}
       onValueChange={setName}
       onKeyDown={handleKeyDown}
     />
