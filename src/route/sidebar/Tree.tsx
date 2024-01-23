@@ -10,7 +10,7 @@ import {
 import { useNoteParams } from "route/notes/note/params";
 import { useEffect, useState } from "react";
 import { LoadingShim } from "component/ui/LoadingShim";
-import { useNoteTreeQuery } from "api/tree";
+import { useNoteTreeQuery, writeNodeLinkToClipboard } from "api/tree";
 import { TreeNode, NodeType } from "algorithm/tree";
 import { invariant } from "exception/invariant";
 import { DragOverlay, useDndContext } from "@dnd-kit/core";
@@ -131,12 +131,8 @@ function NoteTreeNode({ node }: { node: TreeNode }) {
   });
 
   const handleNodeCopyLink = () => {
-    // todo: move this logic away from here
-    const location = window.location.href;
-    const slug = (location.endsWith("/") ? "" : "/") + node.key;
-    const url = location + slug;
-
-    navigator.clipboard.writeText(url);
+    invariant(isNote, "Only notes can be copied");
+    writeNodeLinkToClipboard(node);
   };
 
   const { selectSidebar } = usePaneManager();

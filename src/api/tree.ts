@@ -6,6 +6,7 @@ import {
   createTreeBuilder,
   isRootDirectory,
   isRootNote,
+  NoteNode,
 } from "algorithm/tree";
 
 // api //
@@ -31,4 +32,13 @@ async function noteTree() {
 
 export function useNoteTreeQuery() {
   return useQuery({ queryKey: KEY, queryFn: noteTree });
+}
+
+export function writeNodeLinkToClipboard({ key }: NoteNode) {
+  const location = window.location.origin;
+  console.log(location);
+  const slug = (location.endsWith("/") ? "" : "/") + key;
+  const url = location + slug;
+
+  navigator.clipboard.writeText(url);
 }
