@@ -190,7 +190,11 @@ export function useTreeShortcuts() {
     selectParent,
   } = useTreeStore();
 
-  const enabled = !!selected.node;
+  // only enable shortcuts when a tree node is selected and not renaming
+  const focusedElement = document.activeElement;
+  const selectedTreeNode = !!selected.node;
+  const renaming = focusedElement?.tagName === "INPUT";
+  const enabled = selectedTreeNode && !renaming;
 
   useShortcut(selectNext, "ArrowDown", { enabled });
   useShortcut(selectPrevious, "ArrowUp", { enabled });
