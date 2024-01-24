@@ -1,7 +1,7 @@
 import { useDroppable } from "@dnd-kit/core";
 import { Field } from "component/ui/Field";
 import { ReactNode, useEffect, useRef } from "react";
-import { styled, CSS, s } from "style/stitches.config";
+import { styled, CSS } from "style/stitches.config";
 import { useNodeRename } from "./hooks";
 import { TreeNode } from "algorithm/tree";
 
