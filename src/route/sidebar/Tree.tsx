@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { s, styled } from "style/stitches.config";
+import { CSS, s, styled } from "style/stitches.config";
 import {
   ReaderIcon,
   DragHandleDots2Icon,
@@ -25,6 +25,7 @@ import { DirectoryDropzone, NodeName } from "./components";
 import { NodeContext } from "./context";
 import { useTreeStore } from "./store";
 import { usePaneManager } from "route/usePaneManager";
+import { Button, IconButton } from "component/ui/Button";
 
 export function NoteTree({ width }: { width: number }) {
   const { load, tree } = useTreeStore();
@@ -158,8 +159,10 @@ function NoteTreeNode({ node }: { node: TreeNode }) {
         onCreateNote={handleNoteCreate}
         onCopyNodeLink={handleNodeCopyLink}
       >
-        <NoteInner expanded={isExpanded(node)} onClick={handleSelect}>
-          <Icon onClick={isNote ? handleSelect : handleExpand} />
+        <NoteInner onClick={handleSelect}>
+          <LeftIcon onClick={isNote ? handleSelect : handleExpand}>
+            <Icon />
+          </LeftIcon>
           <NodeName
             renaming={renaming}
             onRenamingChange={setRenaming}
@@ -170,9 +173,11 @@ function NoteTreeNode({ node }: { node: TreeNode }) {
       <DragHandle>
         <When
           condition={`${NoteNodeRoot}:hover &`}
-          css={{ d: "flex", items: "center", justify: "center", p: 8 }}
+          css={{ d: "flex", items: "center", justify: "center" }}
         >
-          <DragHandleDots2Icon />
+          <RightIcon>
+            <DragHandleDots2Icon />
+          </RightIcon>
         </When>
       </DragHandle>
     </>
@@ -194,25 +199,59 @@ function NoteTreeNode({ node }: { node: TreeNode }) {
     );
   }
 
+  const showSubdirectories = isExpanded(node) && !isDragging;
+
   return (
     <>
       <DirectoryDropzone directoryKey={node.key}>
         <NoteNodeRoot ref={ref} {...nodeProps}>
           {row}
         </NoteNodeRoot>
-        {isExpanded(node) && (
+        {showSubdirectories && (
           <>
             <SubDirectories>
               {node.children?.map((child) => (
                 <NoteTreeNode key={child.key} node={child} />
               ))}
             </SubDirectories>
+            {!node.children?.length && (
+              <AddNodeButtons parentKey={node.key} css={{ pl: 27 }} />
+            )}
           </>
         )}
       </DirectoryDropzone>
     </>
   );
 }
+
+function AddNodeButtons({
+  parentKey,
+  css,
+}: {
+  parentKey: string | null;
+  css?: CSS;
+}) {
+  const createNote = useNodeCreate("note", { parentKey });
+  const createDirectory = useNodeCreate("directory", { parentKey });
+
+  return (
+    <ButtonsRoot css={css}>
+      <Button size="small" color="transparent" onClick={createNote}>
+        Add note
+      </Button>
+      |
+      <Button size="small" color="transparent" onClick={createDirectory}>
+        Add directory
+      </Button>
+    </ButtonsRoot>
+  );
+}
+const ButtonsRoot = styled("div", {
+  p: 2,
+  c: "$text3",
+  d: "flex",
+  items: "center",
+});
 
 function getIcon(type: NodeType, expanded: boolean) {
   if (type === "note") return ReaderIcon;
@@ -242,24 +281,16 @@ const NoteNodeRoot = styled(s.div, {
     selected: false,
   },
 });
+
+const LeftIcon = styled(IconButton, { p: 6 });
+const RightIcon = styled(IconButton, { p: 6 });
+
 const NoteInner = styled(s.button, {
   all: "unset",
   d: "grid",
   gridTemplateColumns: "auto 1fr",
   w: "100%",
-  gap: 8,
-  p: 8,
   items: "center",
-
-  variants: {
-    expanded: {
-      true: { fontWeight: 600 },
-    },
-  },
-
-  defaultVariants: {
-    expanded: false,
-  },
 });
 
 const SubDirectories = styled("div", {
