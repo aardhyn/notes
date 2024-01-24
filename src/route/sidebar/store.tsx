@@ -135,7 +135,7 @@ export const useTreeStore = create<Store>()(
           if (!next) {
             if (selected.parent) {
               // select parent's next sibling
-              get().selectParent();
+              get().selectParent({ collapseChildren: false });
               get().selectNext({ jumpDirectories: true });
             } else {
               // no parent, no next sibling
