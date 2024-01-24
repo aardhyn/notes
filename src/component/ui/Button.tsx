@@ -83,8 +83,8 @@ const colorVariants = {
     },
     transparent: {
       bg: "transparent",
-      c: "$primary",
-      "&:hover": { background: "$primary2" },
+      c: "$text3",
+      "&:hover": { c: "$onPrimaryTonal" },
     },
     neutral: {
       bg: "$background3",
@@ -121,7 +121,7 @@ const ButtonRoot = styled(s.button, {
 
   variants: {
     size: {
-      small: { p: "2px 8px", fontSize: 12 },
+      small: { p: "2px 8px", fontSize: 11 },
       medium: { p: "4px 16px", fontSize: 14 },
       large: { p: "8px 32px", fontSize: 24 },
     },
