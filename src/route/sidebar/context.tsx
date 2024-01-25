@@ -1,11 +1,11 @@
-import { NodeType } from "algorithm/tree";
-import { When } from "component/When";
+import { NodeType } from "algorithm";
 import {
+  When,
   ContextMenu,
   ContextMenuItem,
   ContextMenuSeparator,
-} from "component/ui/Context";
-// import { Shortcut } from "component/ui/Shortcut";
+  // Shortcut,
+} from "component";
 import { ReactNode } from "react";
 
 export function NodeContext({

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { CSS, s, styled } from "style/stitches.config";
+import { s, styled } from "style/stitches.config";
 import {
   ReaderIcon,
   DragHandleDots2Icon,
@@ -8,24 +8,18 @@ import {
 } from "@radix-ui/react-icons";
 import { useNoteParams } from "route/notes/note/params";
 import { useEffect, useState } from "react";
-import { LoadingShim } from "component/ui/LoadingShim";
-import { useNoteTreeQuery, writeNodeLinkToClipboard } from "api/tree";
-import { TreeNode, NodeType } from "algorithm/tree";
+import { useNoteTreeQuery, writeNodeLinkToClipboard } from "api";
+import { TreeNode, NodeType } from "algorithm";
 import { invariant } from "exception/invariant";
 import { DragOverlay, useDndContext } from "@dnd-kit/core";
-import {
-  useDraggableNode,
-  useNodeCreate,
-  useNodeDelete,
-  useNoteTreeDrag,
-  useTreeShortcuts,
-} from "./hooks";
-import { When } from "component/When";
-import { DirectoryDropzone, NodeName } from "./components";
+import { useNodeCreate, useNodeDelete } from "./hooks";
+import { AddNodeButtons, DirectoryDropzone, NodeName } from "./components";
 import { NodeContext } from "./context";
 import { useTreeStore } from "./store";
 import { usePaneManager } from "route/usePaneManager";
-import { Button, IconButton } from "component/ui/Button";
+import { useNoteTreeDrag, useDraggableNode } from "./drag";
+import { useTreeShortcuts } from "./navigation";
+import { LoadingShim, When, IconButton } from "component";
 
 export function NoteTree({ width }: { width: number }) {
   const { load, tree } = useTreeStore();
@@ -223,35 +217,6 @@ function NoteTreeNode({ node }: { node: TreeNode }) {
     </>
   );
 }
-
-function AddNodeButtons({
-  parentKey,
-  css,
-}: {
-  parentKey: string | null;
-  css?: CSS;
-}) {
-  const createNote = useNodeCreate("note", { parentKey });
-  const createDirectory = useNodeCreate("directory", { parentKey });
-
-  return (
-    <ButtonsRoot css={css}>
-      <Button size="small" color="transparent" onClick={createNote}>
-        Add note
-      </Button>
-      |
-      <Button size="small" color="transparent" onClick={createDirectory}>
-        Add directory
-      </Button>
-    </ButtonsRoot>
-  );
-}
-const ButtonsRoot = styled("div", {
-  p: 2,
-  c: "$text3",
-  d: "flex",
-  items: "center",
-});
 
 function getIcon(type: NodeType, expanded: boolean) {
   if (type === "note") return ReaderIcon;

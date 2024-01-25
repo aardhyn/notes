@@ -1,7 +1,7 @@
 import { invariant } from "exception/invariant";
 import { Table, supabase } from ".";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { timestampz } from "util/time";
+import { timestampz } from "utility";
 
 const KEY = ["notes"];
 

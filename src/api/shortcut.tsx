@@ -1,7 +1,7 @@
 import { Character } from "constant/types";
 import { invariant } from "exception/invariant";
 import { useEffect } from "react";
-import { caselessEquality } from "util/string";
+import { caselessEquality } from "utility";
 
 const modifierKeys = [
   "Alt",

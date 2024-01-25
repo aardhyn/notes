@@ -1,6 +1,6 @@
 import { lightTheme, darkTheme } from "./stitches.config";
 import { useEffect, useState } from "react";
-import { usePersistent } from "api/usePersistent";
+import { usePersistent } from "api";
 
 export const THEME_KEY = "component-theme";
 export const THEME_MEDIA = "(prefers-color-scheme: dark)";

@@ -1,8 +1,8 @@
 import { useTitle } from "route/useTitle";
 import { s, styled } from "style/stitches.config";
 import { Shortcuts } from "./Shortcuts";
-import { useAuth } from "api/user";
-import { capitalize } from "util/string";
+import { useAuth } from "api";
+import { capitalize } from "utility";
 
 const WAVE_SIZE = 48;
 

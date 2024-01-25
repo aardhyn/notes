@@ -2,7 +2,7 @@ import { createContext, useContext } from "react";
 import { User } from "@supabase/supabase-js";
 import { supabase } from ".";
 import { invariant } from "exception/invariant";
-import { usePersistent, writePersistent } from "./usePersistent";
+import { usePersistent, writePersistent } from "./persistent";
 
 const USER_PERSISTENT_KEY = "note-app-user";
 function clearSignedInUser() {

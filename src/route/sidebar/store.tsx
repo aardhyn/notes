@@ -5,7 +5,7 @@ import {
   getChildren,
   getParent,
   getSiblings,
-} from "algorithm/tree";
+} from "algorithm";
 import { invariant } from "exception/invariant";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";

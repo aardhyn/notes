@@ -1,8 +1,8 @@
 import { CSSProperties, useState } from "react";
 import { CSS } from "style/stitches.config";
 import { useDrag } from "@use-gesture/react";
-import { usePersistent } from "api/usePersistent";
-import { clamp } from "util/math";
+import { usePersistent } from "api";
+import { clamp } from "utility";
 
 const DEFAULT_MIN_SIZE = 0;
 const DEFAULT_SIZE = DEFAULT_MIN_SIZE;

@@ -1,9 +1,9 @@
 import { useDroppable } from "@dnd-kit/core";
-import { Field } from "component/ui/Field";
 import { ReactNode, useEffect, useRef } from "react";
 import { styled, CSS } from "style/stitches.config";
-import { useNodeRename } from "./hooks";
-import { TreeNode } from "algorithm/tree";
+import { useNodeCreate, useNodeRename } from "./hooks";
+import { TreeNode } from "algorithm";
+import { Button, Field } from "component";
 
 export function NodeName({
   renaming,
@@ -90,4 +90,33 @@ const DirectoryDropzoneRoot = styled("div", {
   variants: {
     hovered: { true: { r: 8, backgroundColor: "$background3" } },
   },
+});
+
+export function AddNodeButtons({
+  parentKey,
+  css,
+}: {
+  parentKey: string | null;
+  css?: CSS;
+}) {
+  const createNote = useNodeCreate("note", { parentKey });
+  const createDirectory = useNodeCreate("directory", { parentKey });
+
+  return (
+    <ButtonsRoot css={css}>
+      <Button size="small" color="transparent" onClick={createNote}>
+        Add note
+      </Button>
+      |
+      <Button size="small" color="transparent" onClick={createDirectory}>
+        Add directory
+      </Button>
+    </ButtonsRoot>
+  );
+}
+const ButtonsRoot = styled("div", {
+  p: 2,
+  c: "$text3",
+  d: "flex",
+  items: "center",
 });

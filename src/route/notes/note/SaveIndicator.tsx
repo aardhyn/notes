@@ -1,4 +1,4 @@
-import { Spinner } from "component/ui/Spinner";
+import { Spinner } from "component";
 import { styled } from "style/stitches.config";
 
 export function SaveIndicator({ saving }: { saving: boolean }) {

@@ -7,7 +7,7 @@ import {
   isRootDirectory,
   isRootNote,
   NoteNode,
-} from "algorithm/tree";
+} from "algorithm";
 
 // api //
 

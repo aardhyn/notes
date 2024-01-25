@@ -1,5 +1,4 @@
-import { SimpleDirectory } from "api/directory";
-import { SimpleNote } from "api/note";
+import { SimpleDirectory, SimpleNote } from "api";
 import { invariant } from "exception/invariant";
 
 export type NodeType = "directory" | "note";

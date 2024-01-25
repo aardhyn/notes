@@ -9,7 +9,7 @@ type HorizontalAnchor = (typeof horizontalAnchors)[number];
 
 const FULL_LENGTH = "100%";
 
-export default function DragHandle({
+export function DragHandle({
   anchor,
   size,
   ...divProps

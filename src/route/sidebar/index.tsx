@@ -5,12 +5,9 @@ import {
   DEFAULT_SIDEBAR_WIDTH,
   SIDEBAR_WIDTH_KEY,
 } from "./constants";
-import { useDragPanePrimitive } from "component/DragPane/useDragPanePrimitive";
-import DragHandle from "component/DragPane/DragHandle";
 import { NoteTree } from "./Tree";
-import { signOut } from "api/user";
+import { signOut } from "api";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, IconButton, IconButtonLink } from "component/ui/Button";
 import {
   CardStackPlusIcon,
   ExitIcon,
@@ -20,6 +17,13 @@ import {
 import { usePaneManager } from "route/usePaneManager";
 import { useTreeStore } from "./store";
 import { useNodeCreate } from "./hooks";
+import {
+  useDragPanePrimitive,
+  Button,
+  IconButtonLink,
+  DragHandle,
+  IconButton,
+} from "component";
 
 const NEW_GITHUB_ISSUE =
   "https://github.com/AardhynLavender/note-app-react/issues/new";
@@ -94,9 +98,7 @@ const Root = styled("aside", {
     },
   },
 
-  defaultVariants: {
-    active: false,
-  },
+  defaultVariants: { active: false },
 });
 
 function Actions() {
