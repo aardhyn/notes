@@ -19,7 +19,7 @@ import { useTreeStore } from "./store";
 import { usePaneManager } from "route/usePaneManager";
 import { useNoteTreeDrag, useDraggableNode } from "./drag";
 import { useTreeShortcuts } from "./navigation";
-import { LoadingShim, When, IconButton } from "component";
+import { LoadingScrim, When, IconButton } from "component";
 
 export function NoteTree({ width }: { width: number }) {
   const { load, tree } = useTreeStore();
@@ -37,7 +37,7 @@ export function NoteTree({ width }: { width: number }) {
 
   if (isInitialLoad) {
     // first load, no local state
-    return <LoadingShim />;
+    return <LoadingScrim />;
   }
 
   if (error) {

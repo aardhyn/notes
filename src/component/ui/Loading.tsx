@@ -1,7 +1,7 @@
 import { keyframes, styled } from "style/stitches.config";
 import { Spinner } from "./Spinner";
 
-export function LoadingShim() {
+export function LoadingScrim() {
   return (
     <Root>
       <Spinner />

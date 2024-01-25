@@ -3,7 +3,7 @@ export * from "./Code";
 export * from "./Context";
 export * from "./Dropdown";
 export * from "./Field";
-export * from "./LoadingShim";
+export * from "./Loading";
 export * from "./Scroll";
 export * from "./Shortcut";
 export * from "./Spacer";

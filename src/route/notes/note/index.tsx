@@ -9,7 +9,7 @@ import { SaveIndicator } from "./SaveIndicator";
 import { useDebounce } from "utility";
 import { useTitle } from "route/useTitle";
 import { usePaneManager } from "route/usePaneManager";
-import { LoadingShim, Editor } from "component";
+import { LoadingScrim, Editor } from "component";
 
 export default function Note() {
   const { noteKey } = useNoteParams();
@@ -19,7 +19,7 @@ export default function Note() {
   useTitle(note?.name ?? "Note");
 
   if (isLoading) {
-    return <LoadingShim />;
+    return <LoadingScrim />;
   }
 
   if (error) {
