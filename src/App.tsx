@@ -22,7 +22,7 @@ export function App() {
 }
 
 const Root = styled("div", {
-  minH: "100vh",
+  minH: "-webkit-fill-available", // for mobile safari
   minW: "100vw",
   w: "100vw",
   h: "100vh",
