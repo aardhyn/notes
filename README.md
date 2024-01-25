@@ -17,13 +17,34 @@ And ideally
 - Shareable content
 - Command palette
 
-## Development
+## Configuration
 
-use your JavaScript package manager of choice, I use [pnpm](https://pnpm.io/motivation)
+Configure environment variables
+
+```sh
+cp .env.template .env
+nvim .env
+```
+
+Use your JavaScript package manager of choice, I use [pnpm](https://pnpm.io/motivation)
 
 ```sh
 pnpm install
 ```
+
+Generate types with
+
+```sh
+pnpm generate:types
+```
+
+Build the Icon set with
+
+```sh
+pnpm generate:icons
+```
+
+## Development
 
 ```sh
 pnpm dev:web # or `dev`

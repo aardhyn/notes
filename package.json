@@ -10,6 +10,8 @@
     "build": "pnpm build:web",
     "build:web": "pnpm typecheck && vite build",
     "build:desktop": "pnpm tauri build",
+    "generate:icons": "pwa-assets-generator",
+    "generate:types": "./generateTypes.sh",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
@@ -53,12 +55,14 @@
     "@types/react-dom": "^18.2.17",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
+    "@vite-pwa/assets-generator": "^0.2.3",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "supabase": "^1.123.4",
     "typescript": "^5.2.2",
-    "vite": "^5.0.8"
+    "vite": "^5.0.8",
+    "vite-plugin-pwa": "^0.17.4"
   }
 }

@@ -9,6 +9,7 @@ lerna-debug.log*
 
 node_modules
 dist
+dev-dist
 dist-ssr
 *.local
 
@@ -22,6 +23,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Icons
+public/apple-touch-icon*
+public/favicon.ico
+public/pwa-*
+public/maskable-*
 
 # Environment
 .env*
