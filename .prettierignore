@@ -5,3 +5,5 @@ src-tauri
 *.generated.ts
 *-lock.yaml
 *-lock.json
+*.html
+*.htm
