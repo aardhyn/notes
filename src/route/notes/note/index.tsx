@@ -10,6 +10,7 @@ import { useDebounce } from "utility";
 import { useTitle } from "route/useTitle";
 import { usePaneManager } from "route/usePaneManager";
 import { LoadingScrim, Editor } from "component";
+import { useTreeStore } from "route/sidebar/store";
 
 export default function Note() {
   const { noteKey } = useNoteParams();
@@ -48,7 +49,9 @@ function NoteProvider({ note }: { note: Note }) {
   }, [debouncedContent, mutateNote, note.content, noteKey]);
 
   const { selectPane, activePane } = usePaneManager();
+  const { deselect } = useTreeStore();
   const handleFocus = () => {
+    deselect();
     selectPane(noteKey);
   };
 
