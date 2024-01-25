@@ -1,4 +1,4 @@
-import { Shortcut } from "component/ui/Shortcut";
+import { Shortcut } from "component";
 import { styled } from "style/stitches.config";
 
 export function Shortcuts() {

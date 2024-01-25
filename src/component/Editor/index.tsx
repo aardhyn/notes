@@ -5,7 +5,6 @@ import {
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import { TRANSFORMERS } from "./transformers";
 import { EditorState } from "lexical";
-
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
@@ -14,17 +13,16 @@ import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
-
-import { OnFocusPlugin } from "./plugins/OnFocusPlugin";
-
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { TableNode, TableCellNode, TableRowNode } from "@lexical/table";
 import { CodeNode } from "@lexical/code";
 import { LinkNode } from "@lexical/link";
 import { ListNode, ListItemNode } from "@lexical/list";
+
+import { OnFocusPlugin } from "./plugins/OnFocusPlugin";
 import { CSS, styled } from "style/stitches.config";
-import { defined } from "util/variable";
+import { defined } from "utility";
 
 const NODES = [
   HorizontalRuleNode,

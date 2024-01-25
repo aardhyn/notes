@@ -1,6 +1,6 @@
 import { CSS, styled } from "style/stitches.config";
 import { Code } from "./Code";
-import { capitalize } from "util/string";
+import { capitalize } from "utility";
 
 export function Shortcut({
   parts,

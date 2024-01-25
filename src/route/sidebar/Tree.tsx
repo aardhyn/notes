@@ -5,27 +5,21 @@ import {
   DragHandleDots2Icon,
   ChevronDownIcon,
   ChevronRightIcon,
-  DotsHorizontalIcon,
 } from "@radix-ui/react-icons";
 import { useNoteParams } from "route/notes/note/params";
 import { useEffect, useState } from "react";
-import { LoadingShim } from "component/ui/LoadingShim";
-import { useNoteTreeQuery } from "api/tree";
-import { TreeNode, NodeType } from "algorithm/tree";
+import { useNoteTreeQuery, writeNodeLinkToClipboard } from "api";
+import { TreeNode, NodeType } from "algorithm";
 import { invariant } from "exception/invariant";
 import { DragOverlay, useDndContext } from "@dnd-kit/core";
-import {
-  useDraggableNode,
-  useNodeCreate,
-  useNodeDelete,
-  useNoteTreeDrag,
-  useTreeShortcuts,
-} from "./hooks";
-import { When } from "component/When";
-import { DirectoryDropzone, NodeName } from "./components";
-import { NodeDropdown } from "./dropdown";
+import { useNodeCreate, useNodeDelete } from "./hooks";
+import { AddNodeButtons, DirectoryDropzone, NodeName } from "./components";
+import { NodeContext } from "./context";
 import { useTreeStore } from "./store";
 import { usePaneManager } from "route/usePaneManager";
+import { useNoteTreeDrag, useDraggableNode } from "./drag";
+import { useTreeShortcuts } from "./navigation";
+import { LoadingScrim, When, IconButton } from "component";
 
 export function NoteTree({ width }: { width: number }) {
   const { load, tree } = useTreeStore();
@@ -43,7 +37,7 @@ export function NoteTree({ width }: { width: number }) {
 
   if (isInitialLoad) {
     // first load, no local state
-    return <LoadingShim />;
+    return <LoadingScrim />;
   }
 
   if (error) {
@@ -106,7 +100,6 @@ function NoteTreeNode({ node }: { node: TreeNode }) {
 
   invariant(!isNote || !isDirectory, `Unknown node type: ${node}`);
 
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [renaming, setRenaming] = useState(false);
 
   const { handle: DragHandle, isDragging, ref } = useDraggableNode(node);
@@ -131,22 +124,20 @@ function NoteTreeNode({ node }: { node: TreeNode }) {
   });
 
   const handleNodeCopyLink = () => {
-    // todo: move this logic away from here
-    const location = window.location.href;
-    const slug = (location.endsWith("/") ? "" : "/") + node.key;
-    const url = location + slug;
-
-    navigator.clipboard.writeText(url);
+    invariant(isNote, "Only notes can be copied");
+    writeNodeLinkToClipboard(node);
   };
 
   const { selectSidebar } = usePaneManager();
-  const handleClick = () => {
+  const handleExpand = () => {
+    selectSidebar();
+    toggleExpansion(node);
+  };
+  const handleSelect = () => {
     selectSidebar();
     select(node.key);
     if (isNote) {
       navigate(node.key);
-    } else {
-      toggleExpansion(node);
     }
   };
 
@@ -154,63 +145,72 @@ function NoteTreeNode({ node }: { node: TreeNode }) {
 
   const row = (
     <>
-      <NoteInner ref={ref} expanded={isExpanded(node)} onClick={handleClick}>
-        <DragHandle>
-          <When
-            condition={`${NoteNodeRoot}:hover &`}
-            fallback={<Icon />}
-            css={{ d: "flex", items: "center", justify: "center" }}
-          >
-            <DragHandleDots2Icon />
-          </When>
-        </DragHandle>
-        <NodeName
-          renaming={renaming}
-          onRenamingChange={setRenaming}
-          node={node}
-        />
-      </NoteInner>
-      <NodeDropdown
+      <NodeContext
         type={node.type}
-        open={dropdownOpen}
-        onOpenChange={setDropdownOpen}
         onRename={() => setRenaming(true)}
         onDelete={handleDelete}
         onCreateSubdirectory={handleDirectoryCreate}
         onCreateNote={handleNoteCreate}
         onCopyNodeLink={handleNodeCopyLink}
       >
-        <DropdownButton tabIndex={-1}>
-          <DotsHorizontalIcon />
-        </DropdownButton>
-      </NodeDropdown>
+        <NoteInner onClick={handleSelect}>
+          <LeftIcon onClick={isNote ? handleSelect : handleExpand}>
+            <Icon />
+          </LeftIcon>
+          <NodeName
+            renaming={renaming}
+            onRenamingChange={setRenaming}
+            node={node}
+          />
+        </NoteInner>
+      </NodeContext>
+      <DragHandle>
+        <When
+          condition={`${NoteNodeRoot}:hover &`}
+          css={{ d: "flex", items: "center", justify: "center" }}
+        >
+          <RightIcon>
+            <DragHandleDots2Icon />
+          </RightIcon>
+        </When>
+      </DragHandle>
     </>
   );
 
   const id = "node-" + node.key;
   const nodeProps = {
     id,
-    tabIndex: -1,
     selected: isSelected(node),
     open: isActive,
     hide: isDragging,
   };
 
   if (isNote) {
-    return <NoteNodeRoot {...nodeProps}>{row}</NoteNodeRoot>;
+    return (
+      <NoteNodeRoot ref={ref} {...nodeProps}>
+        {row}
+      </NoteNodeRoot>
+    );
   }
+
+  const showSubdirectories = isExpanded(node) && !isDragging;
 
   return (
     <>
       <DirectoryDropzone directoryKey={node.key}>
-        <NoteNodeRoot {...nodeProps}>{row}</NoteNodeRoot>
-        {isExpanded(node) && (
+        <NoteNodeRoot ref={ref} {...nodeProps}>
+          {row}
+        </NoteNodeRoot>
+        {showSubdirectories && (
           <>
             <SubDirectories>
               {node.children?.map((child) => (
                 <NoteTreeNode key={child.key} node={child} />
               ))}
             </SubDirectories>
+            {!node.children?.length && (
+              <AddNodeButtons parentKey={node.key} css={{ pl: 27 }} />
+            )}
           </>
         )}
       </DirectoryDropzone>
@@ -246,32 +246,15 @@ const NoteNodeRoot = styled(s.div, {
     selected: false,
   },
 });
+
+const LeftIcon = styled(IconButton, { p: 6 });
+const RightIcon = styled(IconButton, { p: 6 });
+
 const NoteInner = styled(s.button, {
   all: "unset",
   d: "grid",
-  gridTemplateColumns: "auto 1fr auto",
-  userSelect: "none",
-  gap: 8,
-  p: 8,
-  items: "center",
-  overflow: "hidden",
-  textOverflow: "ellipsis",
-  whiteSpace: "nowrap",
-
-  variants: {
-    expanded: {
-      true: { fontWeight: 600 },
-    },
-  },
-
-  defaultVariants: {
-    expanded: false,
-  },
-});
-const DropdownButton = styled(s.button, {
-  h: "100%",
-  w: 24,
-  d: "flex",
+  gridTemplateColumns: "auto 1fr",
+  w: "100%",
   items: "center",
 });
 

@@ -1,4 +1,4 @@
-import { useAuth } from "api/user";
+import { useAuth } from "api";
 import { Navigate, Outlet } from "react-router-dom";
 
 export function AuthRedirect() {

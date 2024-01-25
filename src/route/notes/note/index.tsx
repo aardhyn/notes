@@ -1,17 +1,16 @@
 import { styled } from "style/stitches.config";
 import { useEffect, useState } from "react";
-import { Editor } from "component/Editor";
-import { hideScrollbar } from "../../../style/util";
-import { useNoteMutation, useNoteQuery } from "api/note";
+import { hideScrollbar } from "style/util";
+import { useNoteMutation, useNoteQuery, Note } from "api";
 import { useNoteParams } from "./params";
 import { invariant } from "exception/invariant";
 import { NOTE_STYLES } from "./style";
 import { SaveIndicator } from "./SaveIndicator";
-import { useDebounce } from "util/useDebounce";
-import type { Note } from "api/note";
-import { LoadingShim } from "component/ui/LoadingShim";
+import { useDebounce } from "utility";
 import { useTitle } from "route/useTitle";
 import { usePaneManager } from "route/usePaneManager";
+import { LoadingScrim, Editor } from "component";
+import { useTreeStore } from "route/sidebar/store";
 
 export default function Note() {
   const { noteKey } = useNoteParams();
@@ -21,7 +20,7 @@ export default function Note() {
   useTitle(note?.name ?? "Note");
 
   if (isLoading) {
-    return <LoadingShim />;
+    return <LoadingScrim />;
   }
 
   if (error) {
@@ -50,7 +49,9 @@ function NoteProvider({ note }: { note: Note }) {
   }, [debouncedContent, mutateNote, note.content, noteKey]);
 
   const { selectPane, activePane } = usePaneManager();
+  const { deselect } = useTreeStore();
   const handleFocus = () => {
+    deselect();
     selectPane(noteKey);
   };
 

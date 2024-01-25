@@ -1,5 +1,5 @@
-import { signIn, signUp } from "api/user";
-import { SignInForm, SignUpData } from "component/SignInForm";
+import { signIn, signUp } from "api";
+import { SignInForm, SignUpData } from "component";
 import { UnknownError } from "exception/error";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";

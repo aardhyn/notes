@@ -1,10 +1,10 @@
-import { supabase } from "api";
 import {
+  supabase,
   signOut,
   getUser,
   AuthContext,
   useSignedInUser as useUser,
-} from "api/user";
+} from "api";
 import { useEffect } from "react";
 
 function useAuth() {

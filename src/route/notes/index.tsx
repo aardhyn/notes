@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import { Sidebar } from "../sidebar";
 import { hideScrollbar } from "style/util";
 import { OpenSidebar } from "../OpenSidebar";
-import { useShortcut } from "api/shortcut";
+import { useShortcut } from "api";
 import { useTreeStore } from "route/sidebar/store";
 import { useNoteParams } from "./note/params";
 import { usePaneManager } from "route/usePaneManager";

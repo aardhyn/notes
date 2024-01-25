@@ -60,13 +60,13 @@ export const Field = forwardRef<HTMLInputElement, FieldProps>(
         readOnly={readOnly}
         disabled={disabled}
         type={type}
-        onKeyDown={(e) =>
+        onKeyDown={(e) => {
           onKeyDown?.(e.key, {
             shift: e.shiftKey,
             value: e.currentTarget.value,
             blur: e.currentTarget.blur,
-          })
-        }
+          });
+        }}
         onBlur={(e) => onBlur?.(e.target.value)}
         onChange={(e) => onValueChange?.(e.target.value)}
         {...fieldProps}

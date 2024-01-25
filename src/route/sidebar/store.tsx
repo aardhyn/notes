@@ -5,7 +5,7 @@ import {
   getChildren,
   getParent,
   getSiblings,
-} from "algorithm/tree";
+} from "algorithm";
 import { invariant } from "exception/invariant";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -13,6 +13,10 @@ import { persist } from "zustand/middleware";
 const DEFAULT_JUMP_DIRECTORIES = false;
 type AdjacentSelectOptions = {
   jumpDirectories?: boolean;
+};
+const DEFAULT_COLLAPSE_CHILDREN = true;
+type ParentSelectionOptions = {
+  collapseChildren?: boolean;
 };
 
 type Selected = {
@@ -34,7 +38,7 @@ type Actions = {
   selectNext(options?: AdjacentSelectOptions): void;
   selectPrevious(options?: AdjacentSelectOptions): void;
   selectChild(): void;
-  selectParent(): void;
+  selectParent(options?: ParentSelectionOptions): void;
 
   expand: (node: TreeNode) => void;
   collapse: (node: TreeNode) => void;
@@ -131,7 +135,7 @@ export const useTreeStore = create<Store>()(
           if (!next) {
             if (selected.parent) {
               // select parent's next sibling
-              get().selectParent();
+              get().selectParent({ collapseChildren: false });
               get().selectNext({ jumpDirectories: true });
             } else {
               // no parent, no next sibling
@@ -165,7 +169,7 @@ export const useTreeStore = create<Store>()(
         if (!previous) {
           if (selected.parent) {
             // select parent
-            get().selectParent();
+            get().selectParent({ collapseChildren: false });
           } else {
             return; // no parent, no previous sibling
           }
@@ -216,7 +220,7 @@ export const useTreeStore = create<Store>()(
           },
         }));
       },
-      selectParent() {
+      selectParent({ collapseChildren = DEFAULT_COLLAPSE_CHILDREN } = {}) {
         const { selected } = get();
         if (!selected.node) {
           return;
@@ -225,7 +229,7 @@ export const useTreeStore = create<Store>()(
         const isDirectory = selected.node.type === "directory";
         const isExpanded = isDirectory && get().isExpanded(selected.node);
 
-        if (isExpanded && isDirectory) {
+        if (isExpanded && isDirectory && collapseChildren) {
           // collapse current node first
           get().collapse(selected.node);
         } else {

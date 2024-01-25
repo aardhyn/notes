@@ -1,5 +1,4 @@
-import { SimpleDirectory } from "api/directory";
-import { SimpleNote } from "api/note";
+import { SimpleDirectory, SimpleNote } from "api";
 import { invariant } from "exception/invariant";
 
 export type NodeType = "directory" | "note";
@@ -13,20 +12,17 @@ export function isRootNote(note: SimpleNote) {
 export function subDirectoryOf(parent: SimpleDirectory) {
   return (child: SimpleDirectory) => child.parent_key === parent.directory_key;
 }
-
 export function childOf(parent: SimpleDirectory) {
   return (child: SimpleNote) => child.directory_key === parent.directory_key;
 }
 
-type DirectoryNode = { type: "directory"; children: TreeNode[] } & Pick<
-  SimpleDirectory,
-  "name"
->;
-type NoteNode = { type: "note" } & Pick<SimpleNote, "name">;
-export type TreeNode = { key: string; parentKey: string | null } & (
-  | DirectoryNode
-  | NoteNode
-);
+type BaseNode = { name: string; key: string; parentKey: string | null };
+export type DirectoryNode = BaseNode & {
+  type: "directory";
+  children: TreeNode[];
+};
+export type NoteNode = BaseNode & { type: "note" };
+export type TreeNode = DirectoryNode | NoteNode;
 
 export function toNoteNode(note: SimpleNote): TreeNode {
   return {
