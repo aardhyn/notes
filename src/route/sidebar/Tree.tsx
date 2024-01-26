@@ -48,9 +48,7 @@ export function NoteTree({ width }: { width: number }) {
     <NoteNodes css={{ flex: 1 }}>
       <DragContext>
         <DirectoryDropzone directoryKey={null} css={{ flex: 1 }}>
-          {tree?.map((node) => (
-            <NoteTreeNode key={node.key} node={node} />
-          ))}
+          {tree?.map((node) => <NoteTreeNode key={node.key} node={node} />)}
         </DirectoryDropzone>
         <DragOverlay style={{ width: width - 8 - 8 }}>
           <PreviewNode />

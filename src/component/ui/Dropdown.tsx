@@ -5,15 +5,17 @@ import { ComponentProps, ReactNode } from "react";
 export function Dropdown({
   children,
   trigger,
+  side = "bottom",
   ...props
 }: {
   children: ReactNode;
   trigger: ReactNode;
+  side?: DropdownMenu.DropdownMenuContentProps["side"];
 } & React.ComponentProps<typeof DropdownMenu.Root>) {
   return (
     <DropdownMenu.Root {...props}>
       <DropdownMenu.Trigger asChild>{trigger}</DropdownMenu.Trigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent side={side}>
         {children}
         <DropdownMenuArrow />
       </DropdownMenuContent>
