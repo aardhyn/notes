@@ -1,0 +1,9 @@
+dist
+node_modules
+src-tauri
+*.d.ts
+*.generated.ts
+*-lock.yaml
+*-lock.json
+*.html
+*.htm
