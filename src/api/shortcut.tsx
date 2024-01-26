@@ -1,7 +1,7 @@
 import { Character } from "constant/types";
 import { invariant } from "exception/invariant";
 import { useEffect } from "react";
-import { caselessEquality } from "utility";
+import { PartialRecord, caselessEquality, isWindows } from "utility";
 
 const modifierKeys = [
   "Alt",
@@ -22,6 +22,15 @@ const modifierKeys = [
 ] as const;
 type Modifier = (typeof modifierKeys)[number];
 
+// translate Windows keys to MacOS keys
+const translations: PartialRecord<Modifier, Modifier> = {
+  Control: "Meta",
+  Meta: "Control",
+};
+function translateModifier(modifier: Modifier): Modifier {
+  return translations[modifier] ?? modifier;
+}
+
 export type ArrowKey = "ArrowUp" | "ArrowDown" | "ArrowLeft" | "ArrowRight";
 type ShortcutKey = Character | ArrowKey | "enter" | "escape" | "space";
 
@@ -32,7 +41,7 @@ const SHORTCUT_EVENT = "keydown";
 function createShortcut(
   fn: () => void,
   key: ShortcutKey,
-  modifiers: ShortcutOptions["modifiers"]
+  modifiers: Modifier[] = []
 ) {
   const handleKeyDown = (event: Event) => {
     invariant(event instanceof KeyboardEvent, "not keyboard event");
@@ -70,7 +79,12 @@ export function useShortcut(
   { modifiers, enabled }: ShortcutOptions = {}
 ) {
   useEffect(() => {
-    const { register, deregister } = createShortcut(fn, key, modifiers);
+    const { register, deregister } = createShortcut(
+      fn,
+      key,
+      !isWindows() ? modifiers?.map(translateModifier) : modifiers
+    );
+
     if (enabled ?? true) {
       deregister();
       register();
