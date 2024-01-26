@@ -24,6 +24,9 @@ dist-ssr
 *.sln
 *.sw?
 
+# Tasks
+.plan
+
 # Icons
 public/apple-touch-icon*
 public/favicon.ico
