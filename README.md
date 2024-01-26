@@ -35,13 +35,13 @@ pnpm install
 Generate types with
 
 ```sh
-pnpm generate:types
+pnpm types:generate
 ```
 
-Build the Icon set with
+Build the icon set with
 
 ```sh
-pnpm generate:icons
+pnpm icons:generate
 ```
 
 ## Development

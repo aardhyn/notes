@@ -1,13 +1,7 @@
 import { Character } from "constant/types";
 import { invariant } from "exception/invariant";
 import { useEffect } from "react";
-import {
-  PartialRecord,
-  caselessEquality,
-  getOperatingSystem,
-  isMacOS,
-  isWindows,
-} from "utility";
+import { PartialRecord, caselessEquality, isWindows } from "utility";
 
 const modifierKeys = [
   "Alt",
