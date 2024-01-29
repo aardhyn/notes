@@ -2,7 +2,7 @@ import { styled } from "style/stitches.config";
 
 export const Code = styled("code", {
   d: "inline",
-  bg: "$background2",
+  bg: "$background3",
   px: 4,
   py: 2,
   r: 4,
