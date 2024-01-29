@@ -7,6 +7,7 @@ import { useShortcut } from "api";
 import { useTreeStore } from "route/sidebar/store";
 import { useNoteParams } from "./note/params";
 import { usePaneManager } from "route/usePaneManager";
+import { useShortcutPreference } from "route/preferences/preferences";
 
 export default function NotesLayout() {
   const { noteKey } = useNoteParams({ noexcept: true });
@@ -23,7 +24,9 @@ export default function NotesLayout() {
       select(noteKey);
     }
   };
-  useShortcut(handleSelectSidebar, "s", { modifiers: ["Control"] });
+
+  const [toggleSidebar] = useShortcutPreference("toggleSidebar");
+  useShortcut(handleSelectSidebar, toggleSidebar);
 
   return (
     <Root>
