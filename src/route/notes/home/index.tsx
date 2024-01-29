@@ -1,15 +1,15 @@
 import { useTitle } from "route/useTitle";
 import { s, styled } from "style/stitches.config";
 import { Shortcuts } from "./Shortcuts";
-import { useAuth } from "api";
 import { capitalize } from "utility";
+import { useUser } from "api";
 
 const WAVE_SIZE = 48;
 
 export default function Home() {
   useTitle("Home");
 
-  const { user } = useAuth();
+  const { data: user } = useUser();
   const { firstName, lastName } = user?.user_metadata ?? {};
 
   return (
