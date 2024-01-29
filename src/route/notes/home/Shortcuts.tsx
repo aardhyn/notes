@@ -1,4 +1,4 @@
-import { Shortcut } from "component";
+import { ShortcutSet } from "component";
 import { styled } from "style/stitches.config";
 
 export function Shortcuts() {
@@ -20,7 +20,7 @@ export function Shortcuts() {
         <span>
           Select <strong>Explorer</strong>
         </span>
-        <Shortcut parts={["cmd", "s"]} />
+        <ShortcutSet parts={["cmd", "s"]} />
       </Line>
     </List>
   );
