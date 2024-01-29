@@ -36,7 +36,6 @@ export function useNoteTreeQuery() {
 
 export function writeNodeLinkToClipboard({ key }: NoteNode) {
   const location = window.location.origin;
-  console.log(location);
   const slug = (location.endsWith("/") ? "" : "/") + key;
   const url = location + slug;
 
