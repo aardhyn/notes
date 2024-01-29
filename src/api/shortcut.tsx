@@ -20,20 +20,20 @@ export const MODIFIER_KEYS = [
   "Symbol",
   "SymbolLock",
 ] as const;
-export type Modifier = (typeof MODIFIER_KEYS)[number];
+export type ModifierKey = (typeof MODIFIER_KEYS)[number];
 
 export type ArrowKey = "ArrowUp" | "ArrowDown" | "ArrowLeft" | "ArrowRight";
 export type ShortcutKey = Character | ArrowKey | "enter" | "escape" | "space";
 
 export type Shortcut = {
   key: ShortcutKey;
-  modifiers?: Modifier[];
+  modifiers?: ModifierKey[];
   enabled?: boolean;
   name?: string;
 };
 export type ShortcutEvent = {
   key: ShortcutKey | null;
-  modifiers?: Modifier[];
+  modifiers?: ModifierKey[];
 };
 export function isShortcut(
   shortcut: Shortcut | ShortcutEvent
@@ -52,7 +52,7 @@ const SHORTCUT_EVENT = "keydown";
 function createShortcut(
   fn: () => void,
   key: ShortcutKey,
-  modifiers: Modifier[] = []
+  modifiers: ModifierKey[] = []
 ) {
   const handleKeyDown = (event: Event) => {
     invariant(event instanceof KeyboardEvent, "not keyboard event");

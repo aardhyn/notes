@@ -1,13 +1,13 @@
 import { CSS, styled } from "style/stitches.config";
 import { Code } from "../ui/Code";
 import { PartialRecord, capitalize, isWindows } from "utility";
-import { Modifier } from "api";
+import { ModifierKey } from "api";
 import { HTMLAttributes } from "react";
 
 const DEFAULT_SEPARATOR = "+";
 
 type Translation = [string, string];
-const partTranslations: PartialRecord<Modifier, Translation> = {
+const partTranslations: PartialRecord<ModifierKey, Translation> = {
   Meta: ["Win", "⌘"],
   Control: ["Ctrl", "⌃"],
   Alt: ["Alt", "⌥"],
@@ -27,7 +27,7 @@ export function ShortcutSet({
       {parts
         .filter((p) => p !== null)
         .map((part) => {
-          const translation = partTranslations[part as Modifier];
+          const translation = partTranslations[part as ModifierKey];
           if (translation) {
             const [windowsKey, macOSKey] = translation;
             return isWindows() ? windowsKey : macOSKey;

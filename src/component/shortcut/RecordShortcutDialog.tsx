@@ -1,7 +1,7 @@
 import { Button, CloseDialog, Code, Dialog, ShortcutSet } from "component";
 import {
   MODIFIER_KEYS,
-  Modifier,
+  ModifierKey,
   Shortcut,
   ShortcutEvent,
   ShortcutKey,
@@ -71,7 +71,7 @@ function KeyListener({
   onShortcutChange: (shortcut: ShortcutEvent) => void;
 }) {
   const [keys, setKeys] = useState<ShortcutKey[]>([]);
-  const [modifiers, setModifiers] = useState<Modifier[]>([]);
+  const [modifiers, setModifiers] = useState<ModifierKey[]>([]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
