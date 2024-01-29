@@ -2,7 +2,7 @@ import { ShortcutSet, Button, RecordShortcutDialog } from "component";
 import { ShortcutPreferences } from "../types";
 import { styled } from "style/stitches.config";
 import { useShortcutPreference } from "../preferences";
-import { Shortcut } from "api";
+import { Shortcut, getShortcutParts } from "api";
 
 export function ShortcutPreferencesSection({
   preferences,
@@ -31,16 +31,15 @@ function ShortcutPreference({ shortcutKey }: { shortcutKey: string }) {
     });
   };
 
-  const { name, key, modifiers } = shortcut;
-  const shortcutParts = [...((modifiers ?? []) as string[]), key];
+  const shortcutParts = getShortcutParts(shortcut);
 
   return (
     <ShortcutRow key={shortcutKey}>
-      <ShortcutAction>{name}</ShortcutAction>
+      <ShortcutAction>{shortcut.name}</ShortcutAction>
       <ShortcutKeys>
         <ShortcutSet parts={shortcutParts} />
         <RecordShortcutDialog
-          name={name ?? "Unnamed Shortcut"}
+          name={shortcut.name ?? "Unnamed Shortcut"}
           onShortcutChange={handleShortcutChange}
           requireModifier
         >

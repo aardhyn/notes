@@ -40,6 +40,12 @@ export function isShortcut(
 ): shortcut is Shortcut {
   return shortcut["key"] !== null;
 }
+export function getShortcutParts({
+  key,
+  modifiers,
+}: Shortcut | ShortcutEvent): string[] {
+  return [...((modifiers ?? []) as string[]), ...([key ?? []] as string[])];
+}
 
 const SHORTCUT_EVENT = "keydown";
 
