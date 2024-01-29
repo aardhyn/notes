@@ -152,7 +152,7 @@ function NoteTreeNode({ node }: { node: TreeNode }) {
         onCopyNodeLink={handleNodeCopyLink}
       >
         <NoteInner onClick={handleSelect}>
-          <LeftIcon onClick={isNote ? handleSelect : handleExpand}>
+          <LeftIcon size="small" onClick={isNote ? handleSelect : handleExpand}>
             <Icon />
           </LeftIcon>
           <NodeName
@@ -167,7 +167,7 @@ function NoteTreeNode({ node }: { node: TreeNode }) {
           condition={`${NoteNodeRoot}:hover &`}
           css={{ d: "flex", items: "center", justify: "center" }}
         >
-          <RightIcon>
+          <RightIcon size="small">
             <DragHandleDots2Icon />
           </RightIcon>
         </When>
