@@ -12,6 +12,7 @@ import {
   CardStackPlusIcon,
   ExitIcon,
   FilePlusIcon,
+  GearIcon,
   GitHubLogoIcon,
 } from "@radix-ui/react-icons";
 import { usePaneManager } from "route/usePaneManager";
@@ -24,6 +25,7 @@ import {
   DragHandle,
   IconButton,
 } from "component";
+import { PreferencesDialog } from "route/preferences";
 
 const NEW_GITHUB_ISSUE =
   "https://github.com/AardhynLavender/note-app-react/issues/new";
@@ -80,6 +82,11 @@ export function Sidebar() {
         >
           <GitHubLogoIcon />
         </IconButtonLink>
+        <PreferencesDialog>
+          <IconButton size="medium" css={{ h: 36, w: 36 }}>
+            <GearIcon />
+          </IconButton>
+        </PreferencesDialog>
       </Footer>
       <DragHandle {...bind()} size={6} anchor="right" />
     </Root>

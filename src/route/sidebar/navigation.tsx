@@ -23,11 +23,11 @@ export function useTreeShortcuts() {
   const renaming = focusedElement?.tagName === "INPUT";
   const enabled = selectedTreeNode && !renaming;
 
-  useShortcut(selectNext, "ArrowDown", { enabled });
-  useShortcut(selectPrevious, "ArrowUp", { enabled });
+  useShortcut(selectNext, { key: "ArrowDown", enabled });
+  useShortcut(selectPrevious, { key: "ArrowUp", enabled });
 
-  useShortcut(selectChild, "ArrowRight", { enabled });
-  useShortcut(selectParent, "ArrowLeft", { enabled });
+  useShortcut(selectChild, { key: "ArrowRight", enabled });
+  useShortcut(selectParent, { key: "ArrowLeft", enabled });
 
   const navigate = useNavigate();
   useShortcut(
@@ -43,7 +43,6 @@ export function useTreeShortcuts() {
         navigate(node.key);
       }
     },
-    "enter",
-    { enabled }
+    { key: "enter", enabled }
   );
 }

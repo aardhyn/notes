@@ -1,28 +1,18 @@
-import { createContext, useContext } from "react";
-import { User } from "@supabase/supabase-js";
 import { supabase } from ".";
 import { invariant } from "exception/invariant";
-import { usePersistent, writePersistent } from "./persistent";
+import { timestampz } from "utility";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { UserPreferences } from "route/preferences/types";
+import { invalidateQueries } from "./query";
 
-const USER_PERSISTENT_KEY = "note-app-user";
-function clearSignedInUser() {
-  writePersistent(USER_PERSISTENT_KEY, null);
-}
-function setSignedInUser(user: User) {
-  writePersistent(USER_PERSISTENT_KEY, user);
-}
-export function useSignedInUser() {
-  return usePersistent<User | null>(USER_PERSISTENT_KEY, null);
-}
-
+export type ProfileCreation = Partial<Omit<Profile, "profileKey">>;
 export type Profile = {
   firstName: string;
   lastName: string;
   username: string;
   profileKey?: string;
+  preferences?: UserPreferences;
 };
-
-export type ProfileCreation = Partial<Omit<Profile, "profileKey">>;
 
 export async function signUp(
   email: string,
@@ -51,16 +41,13 @@ export async function signIn(email: string, password: string) {
   });
   if (error) throw error;
 
-  setSignedInUser(data.user);
-
   return data;
 }
 
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
+  invalidateQueries("user");
   if (error) throw error;
-
-  clearSignedInUser();
 }
 
 export async function getUser() {
@@ -68,19 +55,32 @@ export async function getUser() {
   if (error) throw error;
   return data.user;
 }
+export function useUser() {
+  return useQuery({ queryKey: ["user"], queryFn: getUser });
+}
 
-type Context = {
-  user: User | null;
-  signOut: () => Promise<void>;
-  getUser: () => Promise<User | null>;
-};
+export async function getProfile() {
+  const user = await getUser();
+  return user.user_metadata as Profile;
+}
+export function useProfile() {
+  return useQuery({ queryKey: ["user", "profile"], queryFn: getProfile });
+}
 
-export const AuthContext = createContext<Context>({
-  user: null,
-  signOut,
-  getUser,
-});
+export async function updateProfile(profile: Partial<Profile>) {
+  const newProfile = {
+    ...profile,
+    updated_at: timestampz(),
+  };
 
-export function useAuth() {
-  return useContext(AuthContext);
+  const { data, error } = await supabase.auth.updateUser({ data: newProfile });
+
+  if (error) throw error;
+  return data;
+}
+export function useProfileMutation() {
+  return useMutation({
+    mutationKey: ["user", "profile"],
+    mutationFn: updateProfile,
+  });
 }

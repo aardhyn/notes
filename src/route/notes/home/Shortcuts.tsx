@@ -1,7 +1,11 @@
-import { Shortcut } from "component";
+import { getShortcutParts } from "api";
+import { ShortcutSet } from "component";
+import { useShortcutPreference } from "route/preferences/preferences";
 import { styled } from "style/stitches.config";
 
 export function Shortcuts() {
+  const [toggleSidebar] = useShortcutPreference("toggleSidebar");
+
   return (
     <List>
       {/* <Line>
@@ -20,7 +24,7 @@ export function Shortcuts() {
         <span>
           Select <strong>Explorer</strong>
         </span>
-        <Shortcut parts={["cmd", "s"]} />
+        <ShortcutSet parts={getShortcutParts(toggleSidebar)} />
       </Line>
     </List>
   );

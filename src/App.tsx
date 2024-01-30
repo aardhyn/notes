@@ -1,5 +1,4 @@
 import { ApiProvider } from "provider/ApiProvider";
-import { AuthProvider } from "provider/AuthProvider";
 import { RouterProvider } from "react-router-dom";
 import { router } from "route/routes";
 import { styled, useGlobalStyles } from "style/stitches.config";
@@ -12,11 +11,9 @@ export function App() {
 
   return (
     <Root className={`${theme}`}>
-      <AuthProvider>
-        <ApiProvider>
-          <RouterProvider router={router} />
-        </ApiProvider>
-      </AuthProvider>
+      <ApiProvider>
+        <RouterProvider router={router} />
+      </ApiProvider>
     </Root>
   );
 }

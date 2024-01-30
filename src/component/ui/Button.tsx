@@ -1,5 +1,5 @@
 import { VariantProps } from "@stitches/react";
-import { ButtonHTMLAttributes, ReactNode } from "react";
+import { ButtonHTMLAttributes, ReactNode, forwardRef } from "react";
 import { Link, LinkProps } from "react-router-dom";
 import { s, styled, CSS } from "style/stitches.config";
 
@@ -20,20 +20,17 @@ type TextButtonProps = IconProps & ButtonProps<typeof ButtonRoot>;
  * @param trailingIcon icon to display after the content
  * @returns
  */
-export function Button({
-  children,
-  leadingIcon,
-  trailingIcon,
-  ...buttonProps
-}: TextButtonProps) {
-  return (
-    <ButtonRoot {...buttonProps}>
-      {leadingIcon && leadingIcon}
-      <s.span css={{ d: "inline-flex", items: "center" }}>{children}</s.span>
-      {trailingIcon && trailingIcon}
-    </ButtonRoot>
-  );
-}
+export const Button = forwardRef<HTMLButtonElement, TextButtonProps>(
+  ({ children, leadingIcon, trailingIcon, ...buttonProps }, ref) => {
+    return (
+      <ButtonRoot ref={ref} {...buttonProps}>
+        {leadingIcon && leadingIcon}
+        <s.span css={{ d: "inline-flex", items: "center" }}>{children}</s.span>
+        {trailingIcon && trailingIcon}
+      </ButtonRoot>
+    );
+  }
+);
 
 type IconButtonProps = Omit<
   ButtonProps<typeof IconButtonRoot>,
@@ -44,9 +41,15 @@ type IconButtonProps = Omit<
  * @param children content of the button
  * @returns
  */
-export function IconButton({ children, ...buttonProps }: IconButtonProps) {
-  return <IconButtonRoot {...buttonProps}>{children}</IconButtonRoot>;
-}
+export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
+  ({ children, ...buttonProps }, ref) => {
+    return (
+      <IconButtonRoot ref={ref} {...buttonProps}>
+        {children}
+      </IconButtonRoot>
+    );
+  }
+);
 
 export function ButtonLink({
   children,
@@ -79,27 +82,27 @@ const colorVariants = {
     primary: {
       bg: "$primary",
       c: "$onPrimary",
-      "&:hover": { background: "$primary2" },
+      "&:hover:not(:disabled)": { background: "$primary2" },
     },
     transparent: {
       bg: "transparent",
       c: "$text3",
-      "&:hover": { c: "$onPrimaryTonal" },
+      "&:hover:not(:disabled)": { c: "$onPrimaryTonal" },
     },
     neutral: {
       bg: "$background3",
       c: "$text",
-      "&:hover": { background: "$background4" },
+      "&:hover:not(:disabled)": { background: "$background4" },
     },
     error: {
       bg: "$error",
       c: "$onError",
-      "&:hover": { background: "$error2" },
+      "&:hover:not(:disabled)": { background: "$error2" },
     },
     warning: {
       bg: "$warning",
       c: "$onWarning",
-      "&:hover": { background: "$warning2" },
+      "&:hover:not(:disabled)": { background: "$warning2" },
     },
   },
 } as const;
@@ -117,7 +120,8 @@ const ButtonRoot = styled(s.button, {
   userSelect: "none",
   r: 8,
 
-  "&:disabled, &:readonly": { opacity: 0.5 },
+  "&:disabled": { opacity: 0.5, cursor: "auto" },
+  "&:readonly": { opacity: 0.5 },
 
   variants: {
     size: {
@@ -159,7 +163,7 @@ const IconButtonRoot = styled(s.button, {
         "&:hover": { background: "transparent" },
       },
       plain: {
-        "&:hover": { background: "$background4" },
+        "&:hover": { background: "$background3" },
       },
     },
     expand: {
@@ -169,6 +173,7 @@ const IconButtonRoot = styled(s.button, {
   },
 
   defaultVariants: {
-    size: "small",
+    size: "medium",
+    variant: "plain",
   },
 });

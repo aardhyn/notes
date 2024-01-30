@@ -1,9 +1,9 @@
 import { Character } from "constant/types";
 import { invariant } from "exception/invariant";
 import { useEffect } from "react";
-import { PartialRecord, caselessEquality, isWindows } from "utility";
+import { caselessEquality } from "utility";
 
-const modifierKeys = [
+export const MODIFIER_KEYS = [
   "Alt",
   "Control",
   "Meta",
@@ -20,28 +20,39 @@ const modifierKeys = [
   "Symbol",
   "SymbolLock",
 ] as const;
-type Modifier = (typeof modifierKeys)[number];
-
-// translate Windows keys to MacOS keys
-const translations: PartialRecord<Modifier, Modifier> = {
-  Control: "Meta",
-  Meta: "Control",
-};
-function translateModifier(modifier: Modifier): Modifier {
-  return translations[modifier] ?? modifier;
-}
+export type ModifierKey = (typeof MODIFIER_KEYS)[number];
 
 export type ArrowKey = "ArrowUp" | "ArrowDown" | "ArrowLeft" | "ArrowRight";
-type ShortcutKey = Character | ArrowKey | "enter" | "escape" | "space";
+export type ShortcutKey = Character | ArrowKey | "enter" | "escape" | "space";
 
-type ShortcutOptions = Partial<{ enabled: boolean; modifiers?: Modifier[] }>;
+export type Shortcut = {
+  key: ShortcutKey;
+  modifiers?: ModifierKey[];
+  enabled?: boolean;
+  name?: string;
+};
+export type ShortcutEvent = {
+  key: ShortcutKey | null;
+  modifiers?: ModifierKey[];
+};
+export function isShortcut(
+  shortcut: Shortcut | ShortcutEvent
+): shortcut is Shortcut {
+  return shortcut["key"] !== null;
+}
+export function getShortcutParts({
+  key,
+  modifiers,
+}: Shortcut | ShortcutEvent): string[] {
+  return [...((modifiers ?? []) as string[]), ...([key ?? []] as string[])];
+}
 
 const SHORTCUT_EVENT = "keydown";
 
 function createShortcut(
   fn: () => void,
   key: ShortcutKey,
-  modifiers: Modifier[] = []
+  modifiers: ModifierKey[] = []
 ) {
   const handleKeyDown = (event: Event) => {
     invariant(event instanceof KeyboardEvent, "not keyboard event");
@@ -75,15 +86,10 @@ function createShortcut(
  */
 export function useShortcut(
   fn: () => void,
-  key: ShortcutKey,
-  { modifiers, enabled }: ShortcutOptions = {}
+  { key, modifiers, enabled }: Shortcut
 ) {
   useEffect(() => {
-    const { register, deregister } = createShortcut(
-      fn,
-      key,
-      !isWindows() ? modifiers?.map(translateModifier) : modifiers
-    );
+    const { register, deregister } = createShortcut(fn, key, modifiers);
 
     if (enabled ?? true) {
       deregister();
